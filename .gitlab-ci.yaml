@@ -1,0 +1,59 @@
+stages:
+  - oidc
+  - init
+  - plan
+  - apply
+
+variables:
+  TF_DIR: "infraestructure/environment"
+  KUBE_CONFIG_PATH: "/root/.kube/config"
+
+before_script:
+  - apk add --no-cache curl jq unzip kubectl
+  - mkdir -p $(dirname $KUBE_CONFIG_PATH)
+  - echo "$KUBE_CONFIG" | base64 -d > $KUBE_CONFIG_PATH
+  - export KUBECONFIG=$KUBE_CONFIG_PATH
+  - terraform --version
+  - kubectl version --client
+
+oidc:
+  stage: oidc
+  image: 
+    name: amazon/aws-cli:latest
+    entrypoint: [""]
+  id_tokens:
+    OIDC_TOKEN:
+      aud: https://gitlab.com
+  before_script:
+    - mkdir -p ~/.aws
+    - echo "${OIDC_TOKEN}" > /tmp/web_identity_token
+    - echo -e "[profile oidc]\nrole_arn=${ROLE_ARN}\nweb_identity_token_file=/tmp/web_identity_token" > ~/.aws/config
+  script:
+    - echo "OIDC job completed"
+
+init:
+  stage: init
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_DIR
+    - terraform init
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+
+plan:
+  stage: plan
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_DIR
+    - terraform plan -var="client_id=$GOOGLE_CLIENT_ID" -var="client_secret=$GOOGLE_CLIENT_SECRET" -var="cookie_secret=$COOKIE_SECRET"
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
+
+apply:
+  stage: apply
+  image: hashicorp/terraform:latest
+  script:
+    - cd $TF_DIR
+    - terraform apply -auto-approve -var="oauth2_proxy_client_id=$GOOGLE_CLIENT_ID" -var="oauth2_proxy_client_secret=$GOOGLE_CLIENT_SECRET" -var="oauth2_proxy_cookie_secret=$COOKIE_SECRET"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
