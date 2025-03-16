@@ -17,7 +17,7 @@ resource "helm_release" "kubernetes_dashboard" {
 
   set {
     name  = "ingress.hosts[0]"
-    value = "in-definition.com" # TODO
+    value = "dashboard.k8s.siluryan.xyz"
   }
 
   set {
@@ -37,7 +37,7 @@ resource "helm_release" "kubernetes_dashboard" {
 
   set {
     name  = "ingress.tls[0].hosts[0]"
-    value = "in-definition.com" # TODO
+    value = "dashboard.k8s.siluryan.xyz"
   }
 
   set {
