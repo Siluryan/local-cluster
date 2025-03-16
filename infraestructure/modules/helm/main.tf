@@ -25,5 +25,5 @@ module "cloudflared" {
     cloudflare_email        = var.cloudflare_email
     cloudflare_tunnel_id    = var.cloudflare_tunnel_id
     cloudflare_tunnel_token = var.cloudflare_tunnel_token
-    depends_on = [ module.nginx ]  
+    depends_on              = [ module.nginx ]  
 }

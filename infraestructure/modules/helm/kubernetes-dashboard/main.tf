@@ -7,7 +7,7 @@ resource "helm_release" "kubernetes_dashboard" {
 
   set {
     name  = "service.type"
-    value = "NodePort"
+    value = "ClusterIp"
   }
 
   set {
