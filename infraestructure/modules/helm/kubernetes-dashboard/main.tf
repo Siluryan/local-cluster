@@ -7,7 +7,7 @@ resource "helm_release" "kubernetes_dashboard" {
 
   set {
     name  = "service.type"
-    value = "ClusterIp"
+    value = "ClusterIP"
   }
 
   set {

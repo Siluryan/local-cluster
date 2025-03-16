@@ -11,7 +11,7 @@ resource "helm_release" "nginx_ingress" {
 
   set {
     name  = "controller.service.type"
-    value = "ClusterIp"
+    value = "ClusterIP"
   }
 
   set {
