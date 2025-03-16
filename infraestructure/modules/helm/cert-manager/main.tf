@@ -26,7 +26,7 @@ resource "kubernetes_manifest" "cluster_issuer_prod" {
     }
     spec = {
       acme = {
-        email  = "todo@in-definition.com" # TODO
+        email  = "guilhermedias@siluryan.xyz"
         server = "https://acme-v02.api.letsencrypt.org/directory"
         privateKeySecretRef = {
           name = "letsencrypt-prod-account-key"

@@ -34,7 +34,7 @@ resource "helm_release" "oauth2_proxy" {
 
   set {
     name  = "extraArgs.redirect-url"
-    value = "https://in-definition.com/oauth2/callback" # TODO
+    value = "https://dashboard.k8s.siluryan.xyz/oauth2/callback"
   }
 
   set {

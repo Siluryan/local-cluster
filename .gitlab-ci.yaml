@@ -7,6 +7,12 @@ stages:
 variables:
   TF_DIR: "infraestructure/environment"
   KUBE_CONFIG_PATH: "/root/.kube/config"
+  TF_VAR_client_id: "$GOOGLE_CLIENT_ID"
+  TF_VAR_client_secret: "$GOOGLE_CLIENT_SECRET"
+  TF_VAR_cookie_secret: "$COOKIE_SECRET"
+  TF_VAR_cloudflare_email: "$CLOUDFLARE_EMAIL"
+  TF_VAR_cloudflare_tunnel_id: "$CLOUDFLARE_TUNNEL_ID"
+  TF_VAR_cloudflare_tunnel_token: "$CLOUDFLARE_TUNNEL_TOKEN"
 
 before_script:
   - apk add --no-cache curl jq unzip kubectl
@@ -45,7 +51,7 @@ plan:
   image: hashicorp/terraform:latest
   script:
     - cd $TF_DIR
-    - terraform plan -var="client_id=$GOOGLE_CLIENT_ID" -var="client_secret=$GOOGLE_CLIENT_SECRET" -var="cookie_secret=$COOKIE_SECRET"
+    - terraform plan
   rules:
     - if: '$CI_COMMIT_BRANCH'
 
@@ -54,6 +60,6 @@ apply:
   image: hashicorp/terraform:latest
   script:
     - cd $TF_DIR
-    - terraform apply -auto-approve -var="oauth2_proxy_client_id=$GOOGLE_CLIENT_ID" -var="oauth2_proxy_client_secret=$GOOGLE_CLIENT_SECRET" -var="oauth2_proxy_cookie_secret=$COOKIE_SECRET"
+    - terraform apply -auto-approve
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
