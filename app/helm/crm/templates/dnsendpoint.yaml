@@ -1,0 +1,11 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: {{ include "crm.fullname" . }}-public
+spec:
+  endpoints:
+    - dnsName: {{ .Values.publicHost | quote }}
+      recordTTL: 60
+      recordType: CNAME
+      targets:
+        - {{ printf "%s.%s" .Values.gateway.name .Values.gateway.namespace | quote }}

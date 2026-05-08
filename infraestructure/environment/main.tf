@@ -1,11 +1,19 @@
 module "helm" {
-    source = "../modules/helm"
+  source = "../modules/helm"
 
-    client_id     = var.oauth2_proxy_client_id
-    client_secret = var.oauth2_proxy_client_secret
-    cookie_secret = var.oauth2_proxy_cookie_secret
-
-    cloudflare_email        = var.cloudflare_email
-    cloudflare_tunnel_id    = var.cloudflare_tunnel_id
-    cloudflare_tunnel_token = var.cloudflare_tunnel_token
+  cluster_domain                = var.cluster_domain
+  acme_email                    = var.acme_email
+  bind_zone                     = var.bind_zone
+  bind_tsig_key_name            = var.bind_tsig_key_name
+  bind_tsig_secret              = var.bind_tsig_secret
+  bind_tsig_algorithm           = var.bind_tsig_algorithm
+  grafana_admin_password        = var.grafana_admin_password
+  cloudflare_tunnel_token       = var.cloudflare_tunnel_token
+  vaultwarden_admin_token       = var.vaultwarden_admin_token
+  wireguard_admin_password_hash = var.wireguard_admin_password_hash
+  wireguard_public_host         = var.wireguard_public_host
+  nexus_admin_password          = var.nexus_admin_password
+  keycloak_admin_password       = var.keycloak_admin_password
+  keycloak_postgres_password    = var.keycloak_postgres_password
+  registry_htpasswd             = var.registry_htpasswd
 }

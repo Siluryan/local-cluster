@@ -1,0 +1,46 @@
+nameOverride: ""
+fullnameOverride: ""
+
+clusterDomain: "personaldevopstrainer.online"
+publicHost: "crm.personaldevopstrainer.online"
+gateway:
+  name: "envoy-gateway"
+  namespace: "envoy-gateway-system"
+
+app:
+  image:
+    repository: "crm-api"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  servicePort: 8080
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+postgres:
+  image: "postgres:16"
+  database: "crm"
+  username: "crm"
+  existingSecret: ""
+  password: ""
+  storage:
+    size: "5Gi"
+
+externalSecrets:
+  enabled: false
+  secretStoreRef:
+    name: "vaultwarden-backend"
+    kind: "ClusterSecretStore"
+  remoteKeys:
+    db: "crm/POSTGRES_DB"
+    user: "crm/POSTGRES_USER"
+    password: "crm/POSTGRES_PASSWORD"
+
+auth:
+  enabled: true
+  issuerUrl: "https://keycloak.personaldevopstrainer.online/realms/crm"
