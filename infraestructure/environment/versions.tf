@@ -10,9 +10,5 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 3.0.0"
     }
-    oci = {
-      source  = "oracle/oci"
-      version = ">= 8.2.0"
-    }
   }
 }

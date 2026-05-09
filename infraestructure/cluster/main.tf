@@ -7,7 +7,10 @@ module "oke" {
   }
 
   compartment_id      = var.compartment_id
-  ssh_public_key_path = var.ssh_public_key_path
+  ssh_public_key_path = pathexpand(var.ssh_public_key_path)
+
+  bastion_availability_domain  = local.preferred_ad_name
+  operator_availability_domain = local.preferred_ad_name
 
   create_cluster     = true
   cluster_name       = "oke-cluster"
@@ -17,9 +20,10 @@ module "oke" {
   worker_pool_size = 1
 
   worker_pools = {
-    np1 = {
-      size = 1
-    }
+    np1 = merge(
+      { size = 1 },
+      var.availability_domain_number != null ? { placement_ads = [var.availability_domain_number] } : {}
+    )
   }
 
   worker_shape = {
