@@ -33,7 +33,7 @@ terraform apply
 
 ## Helm, imagens e rede (qualquer cluster)
 
-**Sim:** quem rodar este Terraform no próprio cluster passa pelos **mesmos requisitos** de rede e de ferramentas. O `plan`/`apply` precisam alcançar, via HTTPS, os repositórios Helm listados abaixo e, depois, os registros de imagem usados pelos charts (por exemplo **Docker Hub** para várias imagens, inclusive Keycloak `bitnamilegacy/*`). Firewall corporativo, proxy mal configurado ou CDN devolvendo **403** em algum índice causam falhas iguais para todos — não é algo específico da sua máquina.
+Quem rodar este Terraform no próprio cluster passa pelos **mesmos requisitos** de rede e de ferramentas. O `plan`/`apply` precisam alcançar, via HTTPS, os repositórios Helm listados abaixo e, depois, os registros de imagem usados pelos charts (por exemplo **Docker Hub** para várias imagens, inclusive Keycloak `bitnamilegacy/*`). Firewall corporativo, proxy mal configurado ou CDN devolvendo **403** em algum índice causam falhas iguais para todos — não é algo específico da sua máquina.
 
 | Origem | Uso no projeto |
 |--------|----------------|
