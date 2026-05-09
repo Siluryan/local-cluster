@@ -67,7 +67,7 @@ O meio-termo costuma ser:
 
 - manter o **default** apontando para repositórios remotos;
 - usar **chart local só onde quebra** (já existe para Keycloak via `keycloak_chart_archive_path`);
-- em rede fechada, gerar um **cache local** (não commitado) com `./scripts/vendor-helm-charts.sh` — detalhes em [`infraestructure/helm-charts/README.md`](../infraestructure/helm-charts/README.md). Integrar o Terraform a *só* usar `.tgz` locais exigiria estender cada módulo `helm_release` (`repository = null` + caminho absoluto do arquivo); hoje o script serve para **arquivar/copiar** pacotes, não para trocar o apply automaticamente.
+- em rede fechada, gerar um **cache local** (não commitado, pasta `.helm/cache/repository/`) com `./scripts/vendor-helm-charts.sh` — detalhes em [`infraestructure/helm-charts/README.md`](../infraestructure/helm-charts/README.md). Integrar o Terraform a *só* usar `.tgz` locais exigiria estender cada módulo `helm_release` (`repository = null` + caminho absoluto do arquivo); hoje o script serve para **arquivar/copiar** pacotes, não para trocar o apply automaticamente.
 
 ## Backend remoto (S3)
 
