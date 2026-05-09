@@ -37,3 +37,4 @@ tmp/
 *.tmp
 
 infraestructure/helm-charts/cache/
+.helm/cache/
