@@ -32,7 +32,7 @@ resource "kubernetes_deployment" "cloudflared" {
       spec {
         container {
           name  = "cloudflared"
-          image = "cloudflare/cloudflared:2026.4.0"
+          image = "cloudflare/cloudflared:latest"
 
           args = [
             "tunnel",

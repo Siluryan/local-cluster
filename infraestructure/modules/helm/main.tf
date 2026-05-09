@@ -1,3 +1,13 @@
+locals {
+  keycloak_chart_cache_primary   = abspath("${path.module}/../../../.helmcache/repository/keycloak-24.7.4.tgz")
+  keycloak_chart_cache_secondary = abspath("${path.module}/../../../.helmcache2/repo/keycloak-24.7.4.tgz")
+  keycloak_chart_auto = (
+    fileexists(local.keycloak_chart_cache_primary) ? local.keycloak_chart_cache_primary : (
+      fileexists(local.keycloak_chart_cache_secondary) ? local.keycloak_chart_cache_secondary : null
+    )
+  )
+}
+
 module "bind" {
   source = "./bind"
 
@@ -96,10 +106,11 @@ module "nexus" {
 module "keycloak" {
   source = "./keycloak"
 
-  cluster_domain    = var.cluster_domain
-  admin_password    = var.keycloak_admin_password
-  postgres_password = var.keycloak_postgres_password
-  depends_on        = [module.envoy, module.external_dns]
+  cluster_domain     = var.cluster_domain
+  admin_password     = var.keycloak_admin_password
+  postgres_password  = var.keycloak_postgres_password
+  chart_archive_path = var.keycloak_chart_archive_path != null ? var.keycloak_chart_archive_path : local.keycloak_chart_auto
+  depends_on         = [module.envoy, module.external_dns]
 }
 
 module "registry" {
@@ -111,6 +122,7 @@ module "registry" {
 }
 
 module "wazuh" {
+  count  = var.enable_wazuh ? 1 : 0
   source = "./wazuh"
 
   cluster_domain = var.cluster_domain

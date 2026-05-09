@@ -10,22 +10,22 @@ Este repositório provisiona um cluster pessoal com:
 - acesso remoto com WireGuard (WG-Easy)
 - publicação HTTP com Cloudflare Tunnel
 
-## Estrutura do repositorio
+## Estrutura do repositório
 
 - `infraestructure/environment`: raiz Terraform para aplicar tudo
-- `infraestructure/modules/helm`: modulos de cada componente do cluster
-- `app`: aplicacao CRM (Java + Postgres + Helm chart)
+- `infraestructure/modules/helm`: módulos de cada componente do cluster
+- `app`: aplicação CRM (Java + Postgres + Helm chart)
 - `docs`: guias de uso do lab
 
 ## Componentes principais
 
 - `bind`: DNS autoritativo interno para o lab
-- `cert-manager`: emissao de certificado ACME via RFC2136 (BIND)
+- `cert-manager`: emissão de certificado ACME via RFC2136 (BIND)
 - `external-dns`: cria/atualiza registros DNS automaticamente
 - `envoy`: gateway de entrada HTTP
 - `monitoring`: kube-prometheus-stack
 - `cloudflare-tunnel`: publica HTTP sem NAT
-- `external-secrets`: sincronizacao de segredos
+- `external-secrets`: sincronização de segredos
 - `vaultwarden`: cofre com interface web
 - `wireguard-ui`: VPN WireGuard com painel web
 - `headlamp`: painel web de administração do cluster

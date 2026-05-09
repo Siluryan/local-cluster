@@ -2,16 +2,16 @@
 
 Este lab publica serviços HTTP por **Cloudflare Tunnel**, sem necessidade de abrir portas no roteador.
 
-## Pre-requisitos
+## Pré-requisitos
 
-- Dominio no Cloudflare: `personaldevopstrainer.online`
+- Domínio no Cloudflare: `personaldevopstrainer.online`
 - Um Tunnel criado no Cloudflare Zero Trust (token gerado)
-- No cluster, o `cloudflared` rodando (modulo `cloudflare-tunnel`)
+- No cluster, o `cloudflared` rodando (módulo `cloudflare-tunnel`)
 
-## Como funciona (visao rapida)
+## Como funciona (visão rápida)
 
 1. O `cloudflared` no cluster conecta no Cloudflare usando o `TUNNEL_TOKEN`
-2. No Zero Trust, voce cria **Public Hostnames** (ex.: `grafana.personaldevopstrainer.online`)
+2. No Zero Trust, crie **Public Hostnames** (ex.: `grafana.personaldevopstrainer.online`)
 3. Cada hostname aponta para um **Service interno** do Kubernetes (URL local do cluster)
 4. O Envoy Gateway roteia para a app via `HTTPRoute`
 
@@ -24,14 +24,14 @@ Este lab publica serviços HTTP por **Cloudflare Tunnel**, sem necessidade de ab
 - `vaultwarden.personaldevopstrainer.online`
 - `headlamp.personaldevopstrainer.online`
 - `nexus.personaldevopstrainer.online`
-- `vpn.personaldevopstrainer.online` (apenas UI do WG-Easy; WireGuard UDP nao passa no Tunnel)
+- `vpn.personaldevopstrainer.online` (apenas UI do WG-Easy; WireGuard UDP não passa pelo Tunnel)
 
 ## Configurar no Cloudflare Zero Trust
 
 No painel do Cloudflare:
 
 1. Acesse **Zero Trust** → **Networks** → **Tunnels**
-2. Abra seu tunnel → **Public Hostnames** → **Add a public hostname**
+2. Abra o tunnel → **Public Hostnames** → **Add a public hostname**
 3. Preencha:
    - **Subdomain**: por exemplo `grafana`
    - **Domain**: `personaldevopstrainer.online`
@@ -40,7 +40,7 @@ No painel do Cloudflare:
 
 ### Qual URL interna usar
 
-Você pode seguir por dois caminhos.
+Há dois caminhos.
 
 #### Caminho A (recomendado): apontar tudo para o Envoy
 
@@ -48,7 +48,7 @@ Crie todos os hostnames no Cloudflare apontando para o **gateway HTTP** do Envoy
 
 - **URL**: `http://envoy-gateway.envoy-gateway-system.svc.cluster.local:80`
 
-Vantagem: você configura o Cloudflare uma vez e mantém o roteamento por host no Kubernetes (via `HTTPRoute`).
+Vantagem: basta configurar o Cloudflare uma vez e manter o roteamento por host no Kubernetes (via `HTTPRoute`).
 
 #### Caminho B: apontar direto para cada Service
 
@@ -64,10 +64,10 @@ Use o Service interno de cada app. Exemplos comuns:
 
 ## TLS / HTTPS
 
-- O HTTPS publico pode ser terminado pelo Cloudflare automaticamente.
+- O HTTPS público pode ser terminado pelo Cloudflare automaticamente.
 - Se quiser TLS end-to-end dentro do cluster, use `cert-manager` + `HTTPRoute`/Gateway com TLS (depende do setup do gateway).
 
-## Validacao
+## Validação
 
 No cluster:
 
@@ -85,7 +85,7 @@ curl -I https://crm.personaldevopstrainer.online/api/health
 
 ## Importante (WireGuard)
 
-O Tunnel do Cloudflare nao encapsula WireGuard UDP/51820.
+O Tunnel da Cloudflare não encapsula WireGuard UDP/51820.
 
 - Publicavel pelo Tunnel: **apenas a UI** (`https://vpn.personaldevopstrainer.online`)
 - Para a VPN funcionar fora de casa: é necessário expor UDP 51820 (NodePort/LoadBalancer + NAT no roteador)

@@ -15,5 +15,7 @@ module "helm" {
   nexus_admin_password          = var.nexus_admin_password
   keycloak_admin_password       = var.keycloak_admin_password
   keycloak_postgres_password    = var.keycloak_postgres_password
+  keycloak_chart_archive_path   = var.keycloak_chart_archive_path
   registry_htpasswd             = var.registry_htpasswd
+  enable_wazuh                  = var.enable_wazuh
 }

@@ -7,7 +7,7 @@
 - Service UDP na porta `51820` (VPN)
 - Interface web exposta por HTTPRoute + DNSEndpoint
 
-## Variaveis relevantes
+## Variáveis relevantes
 
 - `wireguard_admin_password_hash`: hash bcrypt da senha da UI
 - `wireguard_public_host`: host da UI (opcional, default `vpn.personaldevopstrainer.online`)
@@ -20,16 +20,16 @@ Exemplo com Docker:
 docker run --rm ghcr.io/wg-easy/wg-easy:15 wgpw 'SENHA_FORTE'
 ```
 
-Use a saida no `wireguard_admin_password_hash`.
+Use a saída no `wireguard_admin_password_hash`.
 
 ## Acesso
 
 - UI: `https://vpn.personaldevopstrainer.online` (ou host custom)
-- VPN: requer exposicao UDP real de `51820` (Cloudflare Tunnel nao encapsula WireGuard UDP)
+- VPN: requer exposição UDP real de `51820` (Cloudflare Tunnel não encapsula WireGuard UDP)
 
-## Exposicao UDP
+## Exposição UDP
 
-Como o service esta `NodePort` por padrao:
+Como o service está `NodePort` por padrão:
 
 1. Descobrir `nodePort`:
 ```bash

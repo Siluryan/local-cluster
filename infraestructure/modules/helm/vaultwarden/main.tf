@@ -19,6 +19,8 @@ resource "kubernetes_secret" "vaultwarden_env" {
 }
 
 resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
+  wait_until_bound = false
+
   metadata {
     name      = "vaultwarden-data"
     namespace = kubernetes_namespace.vaultwarden.metadata[0].name
@@ -113,53 +115,45 @@ resource "kubernetes_service" "vaultwarden" {
   }
 }
 
-resource "kubernetes_manifest" "vaultwarden_route" {
-  manifest = {
-    apiVersion = "gateway.networking.k8s.io/v1"
-    kind       = "HTTPRoute"
-    metadata = {
-      name      = "vaultwarden"
-      namespace = kubernetes_namespace.vaultwarden.metadata[0].name
-    }
-    spec = {
-      parentRefs = [
-        {
-          name      = "envoy-gateway"
-          namespace = "envoy-gateway-system"
-        }
-      ]
-      hostnames = ["vaultwarden.${var.cluster_domain}"]
-      rules = [
-        {
-          backendRefs = [
-            {
-              name = kubernetes_service.vaultwarden.metadata[0].name
-              port = 80
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
+resource "terraform_data" "vaultwarden_route_dns" {
+  triggers_replace = [var.cluster_domain]
 
-resource "kubernetes_manifest" "vaultwarden_dns" {
-  manifest = {
-    apiVersion = "externaldns.k8s.io/v1alpha1"
-    kind       = "DNSEndpoint"
-    metadata = {
-      name      = "vaultwarden-public"
-      namespace = kubernetes_namespace.vaultwarden.metadata[0].name
-    }
-    spec = {
-      endpoints = [
-        {
-          dnsName    = "vaultwarden.${var.cluster_domain}"
-          recordTTL  = 60
-          recordType = "CNAME"
-          targets    = ["envoy-gateway.envoy-gateway-system"]
-        }
-      ]
-    }
+  depends_on = [kubernetes_service.vaultwarden]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl wait --for=condition=Established --timeout=180s crd/httproutes.gateway.networking.k8s.io
+      kubectl wait --for=condition=Established --timeout=180s crd/dnsendpoints.externaldns.k8s.io
+      cat <<'EOF' | kubectl apply -f -
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: vaultwarden
+        namespace: ${kubernetes_namespace.vaultwarden.metadata[0].name}
+      spec:
+        parentRefs:
+          - name: envoy-gateway
+            namespace: envoy-gateway-system
+        hostnames:
+          - vaultwarden.${var.cluster_domain}
+        rules:
+          - backendRefs:
+              - name: ${kubernetes_service.vaultwarden.metadata[0].name}
+                port: 80
+      ---
+      apiVersion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
+      metadata:
+        name: vaultwarden-public
+        namespace: ${kubernetes_namespace.vaultwarden.metadata[0].name}
+      spec:
+        endpoints:
+          - dnsName: vaultwarden.${var.cluster_domain}
+            recordTTL: 60
+            recordType: CNAME
+            targets:
+              - envoy-gateway.envoy-gateway-system
+      EOF
+    EOT
   }
 }

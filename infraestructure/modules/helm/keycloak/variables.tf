@@ -1,16 +1,18 @@
 variable "cluster_domain" {
-  description = "Dominio base do cluster"
-  type        = string
+  type = string
 }
 
 variable "admin_password" {
-  description = "Senha do admin do Keycloak"
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 variable "postgres_password" {
-  description = "Senha do Postgres do Keycloak"
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
+}
+
+variable "chart_archive_path" {
+  type    = string
+  default = null
 }

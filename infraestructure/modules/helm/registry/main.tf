@@ -22,6 +22,8 @@ resource "kubernetes_secret" "htpasswd" {
 }
 
 resource "kubernetes_persistent_volume_claim" "registry" {
+  wait_until_bound = false
+
   metadata {
     name      = "registry-data"
     namespace = kubernetes_namespace.registry.metadata[0].name
@@ -154,54 +156,46 @@ resource "kubernetes_service" "registry" {
   }
 }
 
-resource "kubernetes_manifest" "registry_route" {
-  manifest = {
-    apiVersion = "gateway.networking.k8s.io/v1"
-    kind       = "HTTPRoute"
-    metadata = {
-      name      = "registry"
-      namespace = kubernetes_namespace.registry.metadata[0].name
-    }
-    spec = {
-      parentRefs = [
-        {
-          name      = "envoy-gateway"
-          namespace = "envoy-gateway-system"
-        }
-      ]
-      hostnames = [local.registry_host]
-      rules = [
-        {
-          backendRefs = [
-            {
-              name = kubernetes_service.registry.metadata[0].name
-              port = 5000
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
+resource "terraform_data" "registry_route_dns" {
+  triggers_replace = [local.registry_host]
 
-resource "kubernetes_manifest" "registry_dns" {
-  manifest = {
-    apiVersion = "externaldns.k8s.io/v1alpha1"
-    kind       = "DNSEndpoint"
-    metadata = {
-      name      = "registry-public"
-      namespace = kubernetes_namespace.registry.metadata[0].name
-    }
-    spec = {
-      endpoints = [
-        {
-          dnsName    = local.registry_host
-          recordTTL  = 60
-          recordType = "CNAME"
-          targets    = ["envoy-gateway.envoy-gateway-system"]
-        }
-      ]
-    }
+  depends_on = [kubernetes_service.registry]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl wait --for=condition=Established --timeout=180s crd/httproutes.gateway.networking.k8s.io
+      kubectl wait --for=condition=Established --timeout=180s crd/dnsendpoints.externaldns.k8s.io
+      cat <<'EOF' | kubectl apply -f -
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: registry
+        namespace: ${kubernetes_namespace.registry.metadata[0].name}
+      spec:
+        parentRefs:
+          - name: envoy-gateway
+            namespace: envoy-gateway-system
+        hostnames:
+          - ${local.registry_host}
+        rules:
+          - backendRefs:
+              - name: ${kubernetes_service.registry.metadata[0].name}
+                port: 5000
+      ---
+      apiVersion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
+      metadata:
+        name: registry-public
+        namespace: ${kubernetes_namespace.registry.metadata[0].name}
+      spec:
+        endpoints:
+          - dnsName: ${local.registry_host}
+            recordTTL: 60
+            recordType: CNAME
+            targets:
+              - envoy-gateway.envoy-gateway-system
+      EOF
+    EOT
   }
 }
 

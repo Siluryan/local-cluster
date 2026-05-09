@@ -2,7 +2,7 @@
 
 Este lab provisiona um Docker Registry (`registry:2`) dentro do cluster com autenticação Basic Auth (htpasswd).
 
-## URL publica
+## URL pública
 
 - `https://registry.personaldevopstrainer.online`
 
@@ -38,7 +38,7 @@ docker tag crm-api:latest registry.personaldevopstrainer.online/crm-api:latest
 docker push registry.personaldevopstrainer.online/crm-api:latest
 ```
 
-Depois, aponte seu Helm chart para:
+Depois, aponte o chart Helm para:
 
 - `app.image.repository=registry.personaldevopstrainer.online/crm-api`
 

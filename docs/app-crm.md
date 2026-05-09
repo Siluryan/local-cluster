@@ -1,6 +1,6 @@
-# Aplicacao CRM (Java + Postgres + Helm)
+# Aplicação CRM (Java + Postgres + Helm)
 
-## Build da aplicacao
+## Build da aplicação
 
 ```bash
 cd app
