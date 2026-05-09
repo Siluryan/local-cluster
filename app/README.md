@@ -52,7 +52,7 @@ helm upgrade --install crm ./helm/crm \
 
 ## Usando ESO para preencher secrets
 
-Com o ESO instalado no lab, voce pode habilitar no chart:
+Com o ESO instalado no lab, habilite no chart:
 
 ```bash
 helm upgrade --install crm ./helm/crm \

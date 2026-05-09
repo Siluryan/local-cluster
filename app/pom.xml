@@ -14,7 +14,6 @@
   <artifactId>crm-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>crm-api</name>
-  <description>Simple CRM API for local-cluster lab</description>
 
   <properties>
     <java.version>21</java.version>

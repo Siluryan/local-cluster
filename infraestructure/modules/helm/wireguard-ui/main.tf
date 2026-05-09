@@ -23,6 +23,8 @@ resource "kubernetes_secret" "wireguard_env" {
 }
 
 resource "kubernetes_persistent_volume_claim" "wireguard_data" {
+  wait_until_bound = false
+
   metadata {
     name      = "wireguard-data"
     namespace = kubernetes_namespace.wireguard.metadata[0].name
@@ -66,7 +68,7 @@ resource "kubernetes_deployment" "wireguard" {
       spec {
         container {
           name  = "wg-easy"
-          image = "ghcr.io/wg-easy/wg-easy:15"
+          image = "ghcr.io/wg-easy/wg-easy:14"
 
           security_context {
             capabilities {
@@ -158,53 +160,45 @@ resource "kubernetes_service" "wireguard_ui" {
   }
 }
 
-resource "kubernetes_manifest" "wireguard_route" {
-  manifest = {
-    apiVersion = "gateway.networking.k8s.io/v1"
-    kind       = "HTTPRoute"
-    metadata = {
-      name      = "wireguard-ui"
-      namespace = kubernetes_namespace.wireguard.metadata[0].name
-    }
-    spec = {
-      parentRefs = [
-        {
-          name      = "envoy-gateway"
-          namespace = "envoy-gateway-system"
-        }
-      ]
-      hostnames = [local.wireguard_host]
-      rules = [
-        {
-          backendRefs = [
-            {
-              name = kubernetes_service.wireguard_ui.metadata[0].name
-              port = 80
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
+resource "terraform_data" "wireguard_route_dns" {
+  triggers_replace = [local.wireguard_host]
 
-resource "kubernetes_manifest" "wireguard_dns" {
-  manifest = {
-    apiVersion = "externaldns.k8s.io/v1alpha1"
-    kind       = "DNSEndpoint"
-    metadata = {
-      name      = "wireguard-ui-public"
-      namespace = kubernetes_namespace.wireguard.metadata[0].name
-    }
-    spec = {
-      endpoints = [
-        {
-          dnsName    = local.wireguard_host
-          recordTTL  = 60
-          recordType = "CNAME"
-          targets    = ["envoy-gateway.envoy-gateway-system"]
-        }
-      ]
-    }
+  depends_on = [kubernetes_service.wireguard_ui]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      kubectl wait --for=condition=Established --timeout=180s crd/httproutes.gateway.networking.k8s.io
+      kubectl wait --for=condition=Established --timeout=180s crd/dnsendpoints.externaldns.k8s.io
+      cat <<'EOF' | kubectl apply -f -
+      apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: wireguard-ui
+        namespace: ${kubernetes_namespace.wireguard.metadata[0].name}
+      spec:
+        parentRefs:
+          - name: envoy-gateway
+            namespace: envoy-gateway-system
+        hostnames:
+          - ${local.wireguard_host}
+        rules:
+          - backendRefs:
+              - name: ${kubernetes_service.wireguard_ui.metadata[0].name}
+                port: 80
+      ---
+      apiVersion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
+      metadata:
+        name: wireguard-ui-public
+        namespace: ${kubernetes_namespace.wireguard.metadata[0].name}
+      spec:
+        endpoints:
+          - dnsName: ${local.wireguard_host}
+            recordTTL: 60
+            recordType: CNAME
+            targets:
+              - envoy-gateway.envoy-gateway-system
+      EOF
+    EOT
   }
 }

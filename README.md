@@ -28,6 +28,9 @@ terraform apply
 
 Depois de aplicar a infraestrutura, siga os guias em `docs/`.
 
+- Keycloak (problemas comuns): [`docs/keycloak-troubleshooting.md`](docs/keycloak-troubleshooting.md)
+- URLs que não abrem na Internet (DNS, tunnel, Cloudflare): [`docs/acesso-urls-publicas.md`](docs/acesso-urls-publicas.md)
+
 ## URLs principais
 
 - `https://crm.personaldevopstrainer.online` - aplicação CRM

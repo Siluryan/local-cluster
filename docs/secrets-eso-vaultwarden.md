@@ -2,14 +2,14 @@
 
 ## Estado atual do lab
 
-- O ESO esta instalado e pronto para consumir `SecretStore`/`ClusterSecretStore`
-- O Vaultwarden esta disponivel com interface web
-- O chart do CRM ja suporta `ExternalSecret`
+- O ESO está instalado e pronto para consumir `SecretStore`/`ClusterSecretStore`
+- O Vaultwarden está disponível com interface web
+- O chart do CRM já suporta `ExternalSecret`
 
 ## Limitação atual
 
-O ESO nao possui provider nativo para Vaultwarden.  
-Para fluxo de producao no lab, use um backend suportado pelo ESO (ex.: Kubernetes, Vault, AWS/GCP) ou implemente um sync job.
+O ESO não possui provider nativo para Vaultwarden.  
+Para fluxo de produção no lab, use um backend suportado pelo ESO (ex.: Kubernetes, Vault, AWS/GCP) ou implemente um sync job.
 
 ## Exemplo rápido com backend Kubernetes (ClusterSecretStore)
 

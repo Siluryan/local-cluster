@@ -4,7 +4,7 @@
 
 - URL: `https://nexus.personaldevopstrainer.online`
 
-## Repositorios recomendados
+## Repositórios recomendados
 
 No Nexus, crie (via UI):
 
@@ -13,12 +13,12 @@ No Nexus, crie (via UI):
 
 ## Publicar artefatos via Maven
 
-Opcao 1: `distributionManagement` no `pom.xml` (recomendado para projetos reais)
+Opção 1: `distributionManagement` no `pom.xml` (recomendado para projetos reais)
 
 - Configure os ids `nexus-releases` e `nexus-snapshots`
 - Use credenciais via `~/.m2/settings.xml`
 
-Opcao 2: sem alterar `pom.xml`, usando `-DaltDeploymentRepository`
+Opção 2: sem alterar `pom.xml`, usando `-DaltDeploymentRepository`
 
 ```bash
 mvn -DskipTests deploy \

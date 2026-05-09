@@ -1,18 +1,18 @@
-# Pre-requisitos
+# Pré-requisitos
 
 ## Ferramentas locais
 
 - `terraform` >= 1.6
 - `kubectl`
 - `helm`
-- `docker` (para build da aplicacao)
+- `docker` (para build da aplicação)
 - `java 21` + `maven` (para build do CRM)
 
 ## Cluster Kubernetes
 
-O cluster precisa estar funcional e acessivel via `~/.kube/config`.
+O cluster precisa estar funcional e acessível via `~/.kube/config`.
 
-Validacoes rapidas:
+Validações rápidas:
 
 ```bash
 kubectl cluster-info
@@ -21,13 +21,13 @@ helm version
 terraform version
 ```
 
-## DNS e dominio
+## DNS e domínio
 
-- Um dominio/base DNS para o lab (ex.: `personaldevopstrainer.online`)
+- Um domínio/base DNS para o lab (ex.: `personaldevopstrainer.online`)
 - Cloudflare Tunnel configurado (token pronto)
-- Zona interna para BIND (ex.: `lab.local`), se for usar DNS interno de laboratorio
+- Zona interna para BIND (ex.: `lab.local`), se for usar DNS interno de laboratório
 
-## Secrets que voce precisa preparar
+## Secrets no `terraform.tfvars`
 
 - `bind_tsig_secret` (TSIG para RFC2136)
 - `grafana_admin_password`
