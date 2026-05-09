@@ -1,16 +1,41 @@
 resource "helm_release" "wazuh" {
   name             = "wazuh"
-  repository       = "https://packages.wazuh.com/4.x/helm/"
+  repository       = "https://morgoved.github.io/wazuh-helm/"
   chart            = "wazuh"
-  version          = "0.1.2"
+  version          = "1.0.23"
   namespace        = "wazuh"
   create_namespace = true
 
   values = [
     yamlencode({
+      "cert-manager" = {
+        enabled = false
+      }
+      indexer = {
+        replicas = 1
+        networkPolicy = {
+          enabled = false
+        }
+      }
       dashboard = {
         service = {
           type = "ClusterIP"
+        }
+        networkPolicy = {
+          enabled = false
+        }
+      }
+      wazuh = {
+        master = {
+          networkPolicy = {
+            enabled = false
+          }
+        }
+        worker = {
+          replicas = 1
+          networkPolicy = {
+            enabled = false
+          }
         }
       }
     })
@@ -38,7 +63,7 @@ resource "kubernetes_manifest" "wazuh_route" {
           backendRefs = [
             {
               name = "wazuh-dashboard"
-              port = 443
+              port = 5601
             }
           ]
         }
