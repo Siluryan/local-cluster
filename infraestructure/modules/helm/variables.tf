@@ -75,5 +75,5 @@ variable "registry_htpasswd" {
 
 variable "enable_wazuh" {
   type    = bool
-  default = false
+  default = true
 }

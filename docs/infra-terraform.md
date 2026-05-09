@@ -31,6 +31,44 @@ terraform plan
 terraform apply
 ```
 
+## Helm, imagens e rede (qualquer cluster)
+
+**Sim:** quem rodar este Terraform no próprio cluster passa pelos **mesmos requisitos** de rede e de ferramentas. O `plan`/`apply` precisam alcançar, via HTTPS, os repositórios Helm listados abaixo e, depois, os registros de imagem usados pelos charts (por exemplo **Docker Hub** para várias imagens, inclusive Keycloak `bitnamilegacy/*`). Firewall corporativo, proxy mal configurado ou CDN devolvendo **403** em algum índice causam falhas iguais para todos — não é algo específico da sua máquina.
+
+| Origem | Uso no projeto |
+|--------|----------------|
+| `charts.bitnami.com` | Chart Keycloak (ou `.tgz` local via `keycloak_chart_archive_path`) |
+| `kubernetes-sigs.github.io` | external-dns, Headlamp |
+| `charts.external-secrets.io` | External Secrets Operator |
+| `charts.jetstack.io` | cert-manager |
+| `prometheus-community.github.io` | kube-prometheus-stack |
+| `sonatype.github.io` | Nexus |
+| `morgoved.github.io` | Wazuh (o índice em `packages.wazuh.com` costuma retornar **403**) |
+| `oci://docker.io/envoyproxy` | Envoy Gateway — exige Helm com suporte a **OCI** |
+
+**Mitigações já previstas no código/docs**
+
+- Keycloak: chart opcional em arquivo local (`keycloak_chart_archive_path`) e imagens legacy documentadas em [`keycloak-troubleshooting.md`](keycloak-troubleshooting.md).
+- Wazuh: repositório alternativo acessível (GitHub Pages), não o pacotes.wazuh.com.
+
+**Checagem rápida antes do `terraform plan`**
+
+```bash
+./scripts/preflight-helm-repos.sh
+```
+
+Isso só valida os índices HTTP dos repos; **não** testa OCI do Envoy nem pull de imagem. Para OCI: `helm show chart oci://docker.io/envoyproxy/gateway-helm` (versão alinhada ao `infraestructure/modules/helm/envoy/main.tf`).
+
+### Colocar todos os charts dentro do Git?
+
+Em geral **não é o melhor padrão**: o pack `kube-prometheus-stack` sozinho é pesado; subir N versões `.tgz` no repositório dificulta clone/PR e ainda obriga a **atualizar blobs** a cada bump de versão no Terraform. **Pull de imagens** (Docker Hub, etc.) continuaria necessário de qualquer forma.
+
+O meio-termo costuma ser:
+
+- manter o **default** apontando para repositórios remotos;
+- usar **chart local só onde quebra** (já existe para Keycloak via `keycloak_chart_archive_path`);
+- em rede fechada, gerar um **cache local** (não commitado) com `./scripts/vendor-helm-charts.sh` — detalhes em [`infraestructure/helm-charts/README.md`](../infraestructure/helm-charts/README.md). Integrar o Terraform a *só* usar `.tgz` locais exigiria estender cada módulo `helm_release` (`repository = null` + caminho absoluto do arquivo); hoje o script serve para **arquivar/copiar** pacotes, não para trocar o apply automaticamente.
+
 ## Backend remoto (S3)
 
 Para manter o state compartilhado e seguro, use backend S3 com lock nativo do próprio S3 (`use_lockfile = true`), sem depender de DynamoDB.
@@ -83,7 +121,7 @@ Permissões IAM mínimas para lock nativo S3 (arquivo `.tflock`):
 - Observabilidade: `monitoring`, `glowroot`
 - Secrets: `external-secrets`, `vaultwarden`
 - VPN: `wireguard-ui`
-- Plataforma: `keycloak`, `nexus`, `registry`, `headlamp`
+- Plataforma: `keycloak`, `nexus`, `registry`, `headlamp`, `wazuh`
 
 ## Verificação básica
 
