@@ -1,6 +1,6 @@
 # Charts Helm (cache opcional)
 
-Este diretório existe para **opcionalmente** guardar pacotes `.tgz` baixados com o script `../../scripts/vendor-helm-charts.sh`.
+Os pacotes `.tgz` opcionais são gerados por `../../scripts/vendor-helm-charts.sh` na pasta **`.helm/cache/repository/`** na raiz do repositório (cache Helm local, não commitado).
 
 ## Por que não versionar todos os charts no Git?
 
@@ -10,7 +10,7 @@ Este diretório existe para **opcionalmente** guardar pacotes `.tgz` baixados co
 
 ## O que o projeto já faz
 
-- **Keycloak**: dá para usar chart local com `keycloak_chart_archive_path` (e detecção de `.helmcache` nos `locals`).
+- **Keycloak**: chart local com `keycloak_chart_archive_path` ou detecção automática se existir `.helm/cache/repository/keycloak-24.7.4.tgz`.
 - **Wazuh**: o repositório oficial da Wazuh costuma retornar **403**; o módulo usa um mirror público estável (`morgoved.github.io`).
 - **Pré-voo rede**: `./scripts/preflight-helm-repos.sh`.
 
@@ -19,7 +19,7 @@ Este diretório existe para **opcionalmente** guardar pacotes `.tgz` baixados co
 | Abordagem | Quando usar |
 |-----------|--------------|
 | Padrão (remoto no `terraform apply`) | Lab com Internet; menor manutenção. |
-| **Cache local** (`cache/` + script) | Firewall, CI sem acesso sempre ao Helm, reproducibilidade entre runs. |
+| **Cache local** (`.helm/cache/repository/` + script) | Firewall, CI sem acesso sempre ao Helm, reproducibilidade entre runs. |
 | **Commit só de charts críticos** | Política interna pede revisão binary de um pacote específico (ex.: apenas Keycloak). |
 
-A pasta **`cache/`** é ignorada pelo Git — rode o vendor onde for aplicar o Terraform ou em pipeline e copie o diretório para o ambiente fechado, se precisar.
+A árvore **`.helm/cache/`** é ignorada pelo Git. Para isolar ainda mais o Helm neste repo: `HELM_CACHE_HOME=$PWD/.helm/cache`, `HELM_CONFIG_HOME=$PWD/.helm/config`, `HELM_DATA_HOME=$PWD/.helm/data` (as pastas `config/` e `data/` podem ficar vazias até você usar plugins/repos locais).

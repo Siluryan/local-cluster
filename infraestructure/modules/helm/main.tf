@@ -1,11 +1,6 @@
 locals {
-  keycloak_chart_cache_primary   = abspath("${path.module}/../../../.helmcache/repository/keycloak-24.7.4.tgz")
-  keycloak_chart_cache_secondary = abspath("${path.module}/../../../.helmcache2/repo/keycloak-24.7.4.tgz")
-  keycloak_chart_auto = (
-    fileexists(local.keycloak_chart_cache_primary) ? local.keycloak_chart_cache_primary : (
-      fileexists(local.keycloak_chart_cache_secondary) ? local.keycloak_chart_cache_secondary : null
-    )
-  )
+  keycloak_chart_cache = abspath("${path.module}/../../../.helm/cache/repository/keycloak-24.7.4.tgz")
+  keycloak_chart_auto  = fileexists(local.keycloak_chart_cache) ? local.keycloak_chart_cache : null
 }
 
 module "bind" {

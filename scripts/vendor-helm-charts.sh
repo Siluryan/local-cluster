@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${CHART_CACHE_DIR:-$ROOT/infraestructure/helm-charts/cache}"
+# Layout alinhado a HELM_CACHE_HOME (subpasta repository/ é onde o Helm guarda .tgz).
+OUT="${CHART_CACHE_DIR:-$ROOT/.helm/cache/repository}"
 
 mkdir -p "$OUT"
 cd "$OUT"
