@@ -159,11 +159,11 @@ Formato: `namespace/release_name`.
 
 **Causas:**
 
-- **Objeto S3 errado:** `-backend-config key=` aponta para outro arquivo de state (state vazio ou antigo)
+- **Backend/state errado:** `key` ou `namespace`/`bucket` apontam para outro objeto de state (state vazio ou antigo)
 - **Workspace** Terraform diferente
 - State local vs remoto sem migração correta
 
-**Correção:** garantir o mesmo `bucket` + `key` + `region` sempre; conferir no console S3 qual objeto contém o state real; usar `terraform workspace show` e `terraform state list`.
+**Correção:** garantir o mesmo `bucket` + `namespace` + `key` + `region` sempre; conferir no Object Storage qual objeto contém o state real; usar `terraform workspace show` e `terraform state list`.
 
 **Não confirme** um `apply` às cegas se o cluster já está provisionado e o plano mostra apenas creates — risco de conflito com recursos existentes.
 
@@ -187,7 +187,7 @@ Formato: `namespace/release_name`.
 
 **Correção:**
 
-- Primeira subida do state local para S3: `terraform init -migrate-state ...`
+- Primeira subida do state local para backend remoto: `terraform init -migrate-state ...`
 - Backend já remoto e só mudou a configuração: `terraform init -reconfigure ...`
 
 ---
