@@ -1,10 +1,17 @@
 # Infra via Terraform
 
-## Variáveis obrigatórias
+O stack **`infraestructure/environment`** está preparado por defeito para **cluster local** (Kind ou outro): credenciais via **`kubeconfig_path`** / **`kube_context`** em `terraform.tfvars`, e estado Terraform **local** (`backend.tf`). Copia `infraestructure/environment/terraform.tfvars.example` para `terraform.tfvars` (não versionado) e preenche domínios, palavras-passe e tokens.
 
-Crie um arquivo local `infraestructure/environment/terraform.tfvars` (não versionar):
+Para usar **Oracle (OKE, backend Object Storage, remote state do cluster)** no stack `environment`, o código precisa de ser alinhado com essa variante; segue o guia passo a passo em **[`environment-oracle.md`](environment-oracle.md)**.
+
+## Variáveis obrigatórias (modo Kind / kubeconfig local)
+
+Exemplo mínimo em `infraestructure/environment/terraform.tfvars`:
 
 ```hcl
+kubeconfig_path = "~/.kube/config"
+kube_context      = "kind-kind"
+
 cluster_domain              = "personaldevopstrainer.online"
 acme_email                  = "EMAIL_PARA_ACME@personaldevopstrainer.online"
 
@@ -20,9 +27,9 @@ wireguard_admin_password_hash = "$2b$12$..."
 wireguard_public_host         = "vpn.personaldevopstrainer.online"
 ```
 
-> Para hosts em `*.personaldevopstrainer.online`, use `bind_zone = "personaldevopstrainer.online"`.
+Para hosts em `*.personaldevopstrainer.online`, usa `bind_zone = "personaldevopstrainer.online"`.
 
-## Aplicar
+## Aplicar (environment em modo local)
 
 ```bash
 cd infraestructure/environment
@@ -30,6 +37,10 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+Stacks **`bootstrap`** e **`cluster`** com backend remoto OCI continuam a usar init com partial config, por exemplo:
+
+`terraform init -backend-config=../backend-bootstrap.hcl` ou `terraform init -backend-config=../backend-cluster.hcl`.
 
 ## Helm, imagens e rede (qualquer cluster)
 
@@ -71,19 +82,17 @@ O meio-termo costuma ser:
 
 ## Backend remoto (OCI Object Storage)
 
-Os stacks `bootstrap`, `cluster` e `environment` usam o backend nativo **`oci`** (Terraform **>= 1.12**). O state fica num bucket de Object Storage; a autenticação é a mesma da API OCI (**`~/.oci/config`**, perfil `DEFAULT` ou variáveis `OCI_*`), não credenciais estilo AWS/S3 compatível.
-
-O bloco `backend "oci"` já está em cada pasta (`backend.tf`). Migração ou override opcional:
+Os stacks usam backend **`oci`** (Terraform **>= 1.12**); credenciais API típicas via ficheiro HCL gitignored — ver secção «Aplicar». Migração de state:
 
 ```bash
 cd infraestructure/cluster
-terraform init -migrate-state   # quando mudares de backend local/outro para oci
+terraform init -backend-config=../backend-cluster.hcl -migrate-state
 ```
 
-Para sobrescrever só alguns campos sem editar `backend.tf`, use um ficheiro HCL (ex.: cópia de `infraestructure/_backend-cluster.hcl.example`) e:
+Se já tens backend remoto e só mudaste região ou credenciais:
 
 ```bash
-terraform init -backend-config=../_backend-cluster.hcl.example
+terraform init -backend-config=../backend-cluster.hcl -reconfigure
 ```
 
 Políticas IAM na OCI: permissões de objeto no bucket de state (`OBJECT_READ`, `OBJECT_CREATE`, `OBJECT_DELETE`, `OBJECT_INSPECT`, etc.), conforme a documentação do backend `oci`.

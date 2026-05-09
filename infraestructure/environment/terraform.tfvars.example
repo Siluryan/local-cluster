@@ -1,14 +1,22 @@
-tenancy_id               = "ocid1.tenancy.oc1..example"
-user_id                  = "ocid1.user.oc1..example"
-api_fingerprint          = "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd"
-api_private_key_path     = "~/.oci/oci_api_key.pem"
-region                   = "us-ashburn-1"
-oke_kubernetes_endpoint  = "PUBLIC_ENDPOINT"
-
-terraform_state_bucket    = "siluryan-local-cluster"
-terraform_state_region      = "us-ashburn-1"
-terraform_state_namespace   = "your-namespace-from-oci-os-ns-get"
+kubeconfig_path = "~/.kube/config"
+kube_context      = "kind-kind"
 
 cluster_domain = "example.local"
 acme_email     = "ops@example.com"
-bind_zone      = "example.local"
+
+bind_zone           = "example.local"
+bind_tsig_key_name  = "externaldns-key"
+bind_tsig_secret    = "changeme"
+bind_tsig_algorithm = "hmac-sha256"
+
+grafana_admin_password        = "changeme"
+cloudflare_tunnel_token       = "changeme"
+vaultwarden_admin_token       = "changeme"
+wireguard_admin_password_hash = "$2y$12$changeme"
+wireguard_public_host         = ""
+
+nexus_admin_password       = "changeme"
+keycloak_admin_password    = "changeme"
+keycloak_postgres_password = "changeme"
+
+registry_htpasswd = "user:$2y$12$changeme"
