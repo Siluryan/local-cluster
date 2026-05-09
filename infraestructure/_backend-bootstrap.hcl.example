@@ -1,0 +1,11 @@
+bucket                      = "siluryan-local-cluster"
+key                         = "infraestructure/bootstrap/terraform.tfstate"
+region                      = "us-ashburn-1"
+endpoint                    = "https://YOUR_NAMESPACE.compat.objectstorage.us-ashburn-1.oraclecloud.com"
+skip_credentials_validation = true
+skip_metadata_api_check     = true
+skip_region_validation      = true
+skip_requesting_account_id  = true
+skip_s3_checksum            = true
+force_path_style            = true
+use_lockfile                = true

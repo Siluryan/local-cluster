@@ -37,3 +37,8 @@ tmp/
 *.tmp
 
 infraestructure/helm-charts/cache/
+
+infraestructure/backend-cluster.hcl
+infraestructure/backend-environment.hcl
+infraestructure/backend-bootstrap.hcl
+infraestructure/oci-s3-state-credentials.local*

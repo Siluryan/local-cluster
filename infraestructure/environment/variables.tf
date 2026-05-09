@@ -1,3 +1,52 @@
+variable "tenancy_id" {
+  type = string
+}
+
+variable "user_id" {
+  type = string
+}
+
+variable "api_fingerprint" {
+  type = string
+}
+
+variable "api_private_key_path" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
+
+variable "oke_cluster_id" {
+  type     = string
+  default  = null
+  nullable = true
+}
+
+variable "oke_kubernetes_endpoint" {
+  type    = string
+  default = "PUBLIC_ENDPOINT"
+}
+
+variable "terraform_state_bucket" {
+  type = string
+}
+
+variable "terraform_state_region" {
+  type = string
+}
+
+variable "terraform_state_namespace" {
+  type        = string
+  description = "Nome do namespace Object Storage (output de `oci os ns get` ou bucket endpoint)."
+}
+
+variable "terraform_state_cluster_key" {
+  type    = string
+  default = "infraestructure/cluster/terraform.tfstate"
+}
+
 variable "cluster_domain" {
   type = string
 }
