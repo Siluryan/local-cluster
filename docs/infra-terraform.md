@@ -69,50 +69,24 @@ O meio-termo costuma ser:
 - usar **chart local só onde quebra** (já existe para Keycloak via `keycloak_chart_archive_path`);
 - em rede fechada, gerar um **cache local** (não commitado, pasta `.helm/cache/repository/`) com `./scripts/vendor-helm-charts.sh` — detalhes em [`infraestructure/helm-charts/README.md`](../infraestructure/helm-charts/README.md). Integrar o Terraform a *só* usar `.tgz` locais exigiria estender cada módulo `helm_release` (`repository = null` + caminho absoluto do arquivo); hoje o script serve para **arquivar/copiar** pacotes, não para trocar o apply automaticamente.
 
-## Backend remoto (S3)
+## Backend remoto (OCI Object Storage)
 
-Para manter o state compartilhado e seguro, use backend S3 com lock nativo do próprio S3 (`use_lockfile = true`), sem depender de DynamoDB.
+Os stacks `bootstrap`, `cluster` e `environment` usam o backend nativo **`oci`** (Terraform **>= 1.12**). O state fica num bucket de Object Storage; a autenticação é a mesma da API OCI (**`~/.oci/config`**, perfil `DEFAULT` ou variáveis `OCI_*`), não credenciais estilo AWS/S3 compatível.
 
-Pré-requisitos:
-
-- Bucket S3 existente (ex.: `tfstate-local-cluster`)
-- Credenciais AWS configuradas no ambiente (`aws configure`, profile ou variaveis `AWS_*`)
-- Terraform `>= 1.10` (recomendado `>= 1.11`) para lock nativo S3
-
-Inicialização/migração do state local para S3:
+O bloco `backend "oci"` já está em cada pasta (`backend.tf`). Migração ou override opcional:
 
 ```bash
-cd infraestructure/environment
-terraform init -migrate-state \
-  -backend-config="bucket=tfstate-local-cluster" \
-  -backend-config="key=local-cluster/environment/terraform.tfstate" \
-  -backend-config="region=us-east-1" \
-  -backend-config="encrypt=true"
+cd infraestructure/cluster
+terraform init -migrate-state   # quando mudares de backend local/outro para oci
 ```
 
-Depois da migração, use normalmente:
+Para sobrescrever só alguns campos sem editar `backend.tf`, use um ficheiro HCL (ex.: cópia de `infraestructure/_backend-cluster.hcl.example`) e:
 
 ```bash
-terraform plan
-terraform apply
+terraform init -backend-config=../_backend-cluster.hcl.example
 ```
 
-Opcional (usar profile específico):
-
-```bash
-terraform init -reconfigure \
-  -backend-config="bucket=tfstate-local-cluster" \
-  -backend-config="key=local-cluster/environment/terraform.tfstate" \
-  -backend-config="region=us-east-1" \
-  -backend-config="encrypt=true" \
-  -backend-config="profile=default"
-```
-
-Permissões IAM mínimas para lock nativo S3 (arquivo `.tflock`):
-
-- `s3:GetObject`
-- `s3:PutObject`
-- `s3:DeleteObject`
+Políticas IAM na OCI: permissões de objeto no bucket de state (`OBJECT_READ`, `OBJECT_CREATE`, `OBJECT_DELETE`, `OBJECT_INSPECT`, etc.), conforme a documentação do backend `oci`.
 
 ## Módulos implantados
 

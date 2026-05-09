@@ -1,0 +1,14 @@
+tenancy_id               = "ocid1.tenancy.oc1..example"
+user_id                  = "ocid1.user.oc1..example"
+api_fingerprint          = "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd"
+api_private_key_path     = "~/.oci/oci_api_key.pem"
+region                   = "us-ashburn-1"
+oke_kubernetes_endpoint  = "PUBLIC_ENDPOINT"
+
+terraform_state_bucket    = "siluryan-local-cluster"
+terraform_state_region      = "us-ashburn-1"
+terraform_state_namespace   = "your-namespace-from-oci-os-ns-get"
+
+cluster_domain = "example.local"
+acme_email     = "ops@example.com"
+bind_zone      = "example.local"
