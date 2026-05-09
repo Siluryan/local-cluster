@@ -1,16 +1,16 @@
 # Documentação
 
-Para começar, siga esta ordem:
+Ordem sugerida de leitura:
 
+- `visao-geral.md`
 - `pre-requisitos.md`
 - `infra-terraform.md`
 - `cloudflare-publicacao.md`
 - `acesso-urls-publicas.md`
 - `registry.md`
-- `app-crm.md`
 - `keycloak.md`
-- `wazuh.md`
 - `secrets-eso-vaultwarden.md`
+- `app-crm.md`
+- `wazuh.md`
 - `wireguard.md`
 - `nexus-maven.md`
-- `visao-geral.md`
