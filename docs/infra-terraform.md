@@ -103,6 +103,7 @@ Políticas IAM na OCI: permissões de objeto no bucket de state (`OBJECT_READ`, 
 - Edge/Publicação: `envoy`, `cloudflare-tunnel`
 - Observabilidade: `monitoring`, `glowroot`
 - Secrets: `external-secrets`, `vaultwarden`
+- Correio (Postfix + SMTP Vaultwarden): [`postfix-mail-vaultwarden.md`](./postfix-mail-vaultwarden.md)
 - VPN: `wireguard-ui`
 - Plataforma: `keycloak`, `nexus`, `registry`, `headlamp` (OIDC via chart; ver [`headlamp-oauth.md`](./headlamp-oauth.md)), `wazuh`
 

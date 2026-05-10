@@ -25,6 +25,7 @@ app/target/
 Thumbs.db
 
 .idea/
+.venv/
 .vscode/
 *.iml
 

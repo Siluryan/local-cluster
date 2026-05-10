@@ -4,16 +4,36 @@ resource "kubernetes_namespace" "vaultwarden" {
   }
 }
 
+locals {
+  vaultwarden_domain_url = "https://vaultwarden.${var.cluster_domain}"
+  vaultwarden_base_env = {
+    ADMIN_TOKEN     = var.admin_token
+    SIGNUPS_ALLOWED = var.allow_signups ? "true" : "false"
+    DOMAIN          = local.vaultwarden_domain_url
+  }
+  vaultwarden_smtp_auth = length(trimspace(var.smtp_username)) > 0 ? {
+    SMTP_USERNAME = var.smtp_username
+    SMTP_PASSWORD = var.smtp_password
+  } : {}
+  vaultwarden_smtp_insecure = var.smtp_accept_invalid_certs && trimspace(var.smtp_host) != "" ? {
+    SMTP_ACCEPT_INVALID_CERTS = "true"
+  } : {}
+  vaultwarden_smtp_env = trimspace(var.smtp_host) != "" ? merge({
+    SMTP_HOST      = trimspace(var.smtp_host)
+    SMTP_PORT      = var.smtp_port
+    SMTP_SECURITY  = var.smtp_security
+    SMTP_FROM      = trimspace(var.smtp_from)
+    SMTP_FROM_NAME = var.smtp_from_name
+  }, local.vaultwarden_smtp_auth, local.vaultwarden_smtp_insecure) : {}
+}
+
 resource "kubernetes_secret" "vaultwarden_env" {
   metadata {
     name      = "vaultwarden-env"
     namespace = kubernetes_namespace.vaultwarden.metadata[0].name
   }
 
-  data = {
-    ADMIN_TOKEN     = var.admin_token
-    SIGNUPS_ALLOWED = var.allow_signups ? "true" : "false"
-  }
+  data = merge(local.vaultwarden_base_env, local.vaultwarden_smtp_env)
 
   type = "Opaque"
 }

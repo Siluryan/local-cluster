@@ -9,15 +9,36 @@ bind_tsig_key_name  = "externaldns-key"
 bind_tsig_secret    = "changeme"
 bind_tsig_algorithm = "hmac-sha256"
 
-grafana_admin_password        = "changeme"
-cloudflare_tunnel_token       = "changeme"
-vaultwarden_admin_token       = "changeme"
+grafana_admin_password  = "changeme"
+cloudflare_tunnel_token = "changeme"
+
+vaultwarden_admin_token = "changeme"
+
+postfix_enabled                      = false
+postfix_extra_allowed_sender_domains = ""
+postfix_relayhost                    = ""
+postfix_relay_username               = ""
+postfix_relay_password               = ""
+
+vaultwarden_smtp_host      = ""
+vaultwarden_smtp_port      = "587"
+vaultwarden_smtp_security  = "starttls"
+vaultwarden_smtp_username  = ""
+vaultwarden_smtp_password  = ""
+vaultwarden_smtp_from      = ""
+vaultwarden_smtp_from_name = "Vaultwarden"
+vaultwarden_smtp_accept_invalid_certs    = false
+vaultwarden_config_patch_invalid_certs   = true
+vaultwarden_config_patch_run_id          = "1"
+
 wireguard_admin_password_hash = "$2y$12$changeme"
 wireguard_public_host         = ""
 
 nexus_admin_password       = "changeme"
 keycloak_admin_password    = "changeme"
 keycloak_postgres_password = "changeme"
+keycloak_chart_archive_path = null
+enable_wazuh                  = true
 
 registry_htpasswd = "user:$2y$12$changeme"
 

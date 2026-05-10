@@ -36,3 +36,4 @@ kubectl -n external-secrets create secret generic crm-source \
 - URL esperada: `https://vaultwarden.personaldevopstrainer.online`
 - Defina `vaultwarden_admin_token` forte
 - Use MFA para contas administrativas
+- Postfix no cluster, SMTP, TLS e *patch* de `config.json`: [`postfix-mail-vaultwarden.md`](./postfix-mail-vaultwarden.md)

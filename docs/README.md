@@ -13,6 +13,7 @@ Ordem sugerida de leitura:
 - `headlamp-oauth.md`
 - `kind-oidc-apiserver.md`
 - `secrets-eso-vaultwarden.md`
+- `postfix-mail-vaultwarden.md`
 - `app-crm.md`
 - `wazuh.md`
 - `wireguard.md`
