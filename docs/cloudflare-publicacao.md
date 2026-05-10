@@ -30,8 +30,8 @@ Este lab publica serviços HTTP por **Cloudflare Tunnel**, sem necessidade de ab
 
 No painel do Cloudflare:
 
-1. Acesse **Zero Trust** → **Networks** → **Tunnels**
-2. Abra o tunnel → **Public Hostnames** → **Add a public hostname**
+1. Acesse **Zero Trust**, **Networks**, **Tunnels**
+2. Abra o tunnel, **Public Hostnames**, **Add a public hostname**
 3. Preencha:
    - **Subdomain**: por exemplo `grafana`
    - **Domain**: `personaldevopstrainer.online`
@@ -44,11 +44,22 @@ Há dois caminhos.
 
 #### Caminho A (recomendado): apontar tudo para o Envoy
 
-Crie todos os hostnames no Cloudflare apontando para o **gateway HTTP** do Envoy:
+Crie todos os hostnames no Cloudflare apontando para o **proxy HTTP** gerenciado pelo Envoy Gateway (o Service na porta **80**).
 
-- **URL**: `http://envoy-gateway.envoy-gateway-system.svc.cluster.local:80`
+**Importante:** o Service criado pelo Helm com nome `envoy-gateway` é o **control plane** (portas como 18000/9443), **não** escuta na porta 80. Depois que existem `GatewayClass` `eg` e `Gateway` `envoy-gateway` (criados pelo Terraform neste repositório), o controlador cria **outro** `Service` com nome longo (ex.: `envoy-envoy-gateway-system-envoy-gateway-...`) que expõe **80/TCP**. É esse nome que deve aparecer na URL de origem do tunnel.
 
-Vantagem: basta configurar o Cloudflare uma vez e manter o roteamento por host no Kubernetes (via `HTTPRoute`).
+Descubra o nome atual:
+
+```bash
+kubectl get svc -n envoy-gateway-system -o json \
+  | jq -r '.items[] | select(.spec.ports[]?.port == 80) | .metadata.name'
+```
+
+Use na Cloudflare (substitua `<nome>` pelo resultado):
+
+- **URL**: `http://<nome>.envoy-gateway-system.svc.cluster.local:80`
+
+Vantagem: um único endpoint HTTP no cluster; o roteamento por hostname continua nos `HTTPRoute`.
 
 #### Caminho B: apontar direto para cada Service
 
@@ -89,4 +100,8 @@ O Tunnel da Cloudflare não encapsula WireGuard UDP/51820.
 
 - Publicavel pelo Tunnel: **apenas a UI** (`https://vpn.personaldevopstrainer.online`)
 - Para a VPN funcionar fora de casa: é necessário expor UDP 51820 (NodePort/LoadBalancer + NAT no roteador)
+
+## Se o tunnel não alcança o serviço (502, erro no cloudflared)
+
+Veja o roteiro completo em **[`debug-acesso-publico.md`](./debug-acesso-publico.md)** (Service interno correto na porta **80** do **proxy Envoy**, não confundir com o Service `envoy-gateway` do Helm; exemplos com Wazuh e porta **5601**).
 

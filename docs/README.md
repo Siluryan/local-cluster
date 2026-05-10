@@ -7,6 +7,7 @@ Ordem sugerida de leitura:
 - `infra-terraform.md`
 - `cloudflare-publicacao.md`
 - `acesso-urls-publicas.md`
+- `debug-acesso-publico.md` *(tunnel, Envoy, HTTPRoute, Cloudflare — quando a URL pública falha)*
 - `registry.md`
 - `keycloak.md`
 - `headlamp-oauth.md`
