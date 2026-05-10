@@ -10,6 +10,7 @@ Ordem sugerida de leitura:
 - `registry.md`
 - `keycloak.md`
 - `headlamp-oauth.md`
+- `kind-oidc-apiserver.md`
 - `secrets-eso-vaultwarden.md`
 - `app-crm.md`
 - `wazuh.md`
