@@ -4,6 +4,8 @@
 
 - URL: `https://keycloak.personaldevopstrainer.online`
 
+Para configurar o **Headlamp** com login OIDC (client, redirect `/oidc-callback`, secret), siga **[`headlamp-oauth.md`](./headlamp-oauth.md)**.
+
 ## Configuração mínima recomendada
 
 1. Criar Realm `crm`

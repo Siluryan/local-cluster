@@ -97,7 +97,7 @@ Use quando quiser ir direto ao `Service` Kubernetes (sem passar pelo Envoy). Os 
 | `grafana` | `grafana.personaldevopstrainer.online` | `http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local:80` |
 | `prometheus` | `prometheus.personaldevopstrainer.online` | `http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090` |
 | `wazuh` | `wazuh.personaldevopstrainer.online` | `https://wazuh-dashboard.wazuh.svc.cluster.local:443` *(com Wazuh instalado; confira com `kubectl get svc -n wazuh`)* |
-| `headlamp` | `headlamp.personaldevopstrainer.online` | `http://headlamp.headlamp.svc.cluster.local:80` |
+| `headlamp` | `headlamp.personaldevopstrainer.online` | `http://headlamp.headlamp.svc.cluster.local:80` *(Envoy → `HTTPRoute` → Headlamp; OIDC Keycloak: [`headlamp-oauth.md`](./headlamp-oauth.md))* |
 | `nexus` | `nexus.personaldevopstrainer.online` | `http://nexus-nexus-repository-manager.nexus.svc.cluster.local:8081` |
 | `registry` | `registry.personaldevopstrainer.online` | `http://registry.registry.svc.cluster.local:5000` |
 | `vaultwarden` | `vaultwarden.personaldevopstrainer.online` | `http://vaultwarden.vaultwarden.svc.cluster.local:80` |

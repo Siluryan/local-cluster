@@ -9,6 +9,7 @@ Ordem sugerida de leitura:
 - `acesso-urls-publicas.md`
 - `registry.md`
 - `keycloak.md`
+- `headlamp-oauth.md` (Headlamp OIDC / Keycloak)
 - `secrets-eso-vaultwarden.md`
 - `app-crm.md`
 - `wazuh.md`

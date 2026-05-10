@@ -18,4 +18,7 @@ module "helm" {
   keycloak_chart_archive_path   = var.keycloak_chart_archive_path
   registry_htpasswd             = var.registry_htpasswd
   enable_wazuh                  = var.enable_wazuh
+  headlamp_oauth_client_id      = var.headlamp_oauth_client_id
+  headlamp_oauth_client_secret  = var.headlamp_oauth_client_secret
+  headlamp_oauth_keycloak_realm = var.headlamp_oauth_keycloak_realm
 }
