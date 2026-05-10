@@ -44,34 +44,34 @@ locals {
       is_downsize_enabled = var.gmc_scale_is_downsize_enabled
       target_size         = var.gmc_scale_target_size
     }
-    gpu_memory_fabric_ids          = [] # empty pool-specific default; required for mode = "gpu-memory-cluster"
-    ignore_initial_pool_size       = false
-    image_id                       = var.image_id
-    image_type                     = var.image_type
-    kubernetes_version             = var.kubernetes_version
-    max_pods_per_node              = min(max(var.max_pods_per_node, 1), 110)
-    memory                         = local.memory
-    mode                           = var.worker_pool_mode
-    node_cycling_enabled           = false
-    node_cycling_max_surge         = 1
-    node_cycling_max_unavailable   = 0
-    node_cycling_mode              = ["instance"]
-    node_labels                    = var.node_labels
-    nsg_ids                        = [] # empty pool-specific default
-    ocpus                          = local.ocpus
-    os                             = var.image_os
-    os_version                     = var.image_os_version
-    placement_ads                  = var.ad_numbers
-    platform_config                = var.platform_config
-    pod_nsg_ids                    = var.pod_nsg_ids
-    pod_subnet_id                  = coalesce(var.pod_subnet_id, var.worker_subnet_id, "none")
-    preemptible_config             = var.preemptible_config
-    pv_transit_encryption          = var.pv_transit_encryption
-    shape                          = local.shape
-    size                           = var.worker_pool_size
-    subnet_id                      = var.worker_subnet_id
-    taints                         = [] # empty pool-specific default
-    volume_kms_key_id              = var.volume_kms_key_id
+    gpu_memory_fabric_ids        = [] # empty pool-specific default; required for mode = "gpu-memory-cluster"
+    ignore_initial_pool_size     = false
+    image_id                     = var.image_id
+    image_type                   = var.image_type
+    kubernetes_version           = var.kubernetes_version
+    max_pods_per_node            = min(max(var.max_pods_per_node, 1), 110)
+    memory                       = local.memory
+    mode                         = var.worker_pool_mode
+    node_cycling_enabled         = false
+    node_cycling_max_surge       = 1
+    node_cycling_max_unavailable = 0
+    node_cycling_mode            = ["instance"]
+    node_labels                  = var.node_labels
+    nsg_ids                      = [] # empty pool-specific default
+    ocpus                        = local.ocpus
+    os                           = var.image_os
+    os_version                   = var.image_os_version
+    placement_ads                = var.ad_numbers
+    platform_config              = var.platform_config
+    pod_nsg_ids                  = var.pod_nsg_ids
+    pod_subnet_id                = coalesce(var.pod_subnet_id, var.worker_subnet_id, "none")
+    preemptible_config           = var.preemptible_config
+    pv_transit_encryption        = var.pv_transit_encryption
+    shape                        = local.shape
+    size                         = var.worker_pool_size
+    subnet_id                    = var.worker_subnet_id
+    taints                       = [] # empty pool-specific default
+    volume_kms_key_id            = var.volume_kms_key_id
   }
 
   # Merge desired pool configuration onto default values

@@ -14,8 +14,8 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   pub_lb_nsg_id = one(compact([try(var.nsgs.pub_lb.id, null), one(oci_core_network_security_group.pub_lb[*].id)]))
-  pub_lb_rules = local.pub_lb_nsg_enabled ? ( var.use_stateless_rules ? local.pub_lb_stateless_rules: local.pub_lb_stateful_rules ) : {}
-  
+  pub_lb_rules  = local.pub_lb_nsg_enabled ? (var.use_stateless_rules ? local.pub_lb_stateless_rules : local.pub_lb_stateful_rules) : {}
+
   pub_lb_stateful_rules = merge(
     {
       "Allow TCP egress from public load balancers to workers nodes for NodePort traffic" : {

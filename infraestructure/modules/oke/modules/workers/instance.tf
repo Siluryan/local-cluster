@@ -94,10 +94,10 @@ resource "oci_core_instance" "workers" {
         pod-subnets               = each.value.pod_subnet_id
         pod-nsgids                = join(",", each.value.pod_nsg_ids)
       },
-      var.enable_ipv6 ? 
-      { 
-        ip-families               = "IPv4,IPv6" 
-      }: {} ) : {},
+      var.enable_ipv6 ?
+      {
+        ip-families = "IPv4,IPv6"
+    } : {}) : {},
 
     # Only provide cluster DNS service address if set explicitly; determined automatically in practice.
     coalesce(var.cluster_dns, "none") == "none" ? {} : { kubedns_svc_ip = var.cluster_dns },

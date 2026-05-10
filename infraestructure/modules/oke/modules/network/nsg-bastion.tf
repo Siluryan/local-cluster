@@ -14,7 +14,7 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   bastion_nsg_id = one(compact([try(var.nsgs.bastion.id, null), one(oci_core_network_security_group.bastion[*].id)]))
-  bastion_rules = local.bastion_nsg_enabled ? ( var.use_stateless_rules ? local.bastion_stateless_rules: local.bastion_stateful_rules ) : {}
+  bastion_rules  = local.bastion_nsg_enabled ? (var.use_stateless_rules ? local.bastion_stateless_rules : local.bastion_stateful_rules) : {}
 
   bastion_stateful_rules = merge(
     { for cidr in var.bastion_allowed_cidrs :

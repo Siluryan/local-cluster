@@ -14,7 +14,7 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   int_lb_nsg_id = one(compact([try(var.nsgs.int_lb.id, null), one(oci_core_network_security_group.int_lb[*].id)]))
-  int_lb_rules = local.int_lb_nsg_enabled ? ( var.use_stateless_rules ? local.int_lb_stateless_rules: local.int_lb_stateful_rules ) : {}
+  int_lb_rules  = local.int_lb_nsg_enabled ? (var.use_stateless_rules ? local.int_lb_stateless_rules : local.int_lb_stateful_rules) : {}
   int_lb_stateful_rules = merge(
     {
       "Allow TCP egress from internal load balancers to workers for Node Ports" : {
@@ -30,13 +30,13 @@ locals {
         protocol = local.tcp_protocol, port = local.health_check_port, destination = local.worker_nsg_id, destination_type = local.rule_type_nsg,
       },
     },
-    
+
     local.pod_nsg_enabled ? {
       "Allow all egress from internal load balancers to pods" : {
         protocol = local.all_protocols, port = local.all_ports, destination = local.pod_nsg_id, destination_type = local.rule_type_nsg,
       },
     } : {},
-    
+
     var.enable_ipv6 ? {
       "Allow ICMPv6 egress from internal load balancers to worker nodes for path discovery" : {
         protocol = local.icmpv6_protocol, port = local.all_ports, destination = local.worker_nsg_id, destination_type = local.rule_type_nsg,
@@ -54,7 +54,7 @@ locals {
       "Allow TCP ingress to internal load balancers from workers for Node Ports" : {
         protocol = local.tcp_protocol, source_port_min = local.node_port_min, source_port_max = local.node_port_max, source = local.worker_nsg_id, source_type = local.rule_type_nsg, stateless = true
       },
-      
+
       "Allow UDP egress from internal load balancers to workers for Node Ports" : {
         protocol = local.udp_protocol, destination_port_min = local.node_port_min, destination_port_max = local.node_port_max, destination = local.worker_nsg_id, destination_type = local.rule_type_nsg, stateless = true
       },
