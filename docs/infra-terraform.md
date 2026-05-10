@@ -114,6 +114,8 @@ kubectl get httproute -A
 kubectl get dnsendpoint -A
 ```
 
+Se URLs públicas falharem apesar dos pods ok, use **[`debug-acesso-publico.md`](./debug-acesso-publico.md)** (tunnel Cloudflare, Envoy, portas corretas).
+
 ## Troubleshooting: external-dns (RFC2136)
 
 Se o `external-dns` entrar em `CrashLoopBackOff` com mensagens como:

@@ -7,6 +7,7 @@ Ordem sugerida de leitura:
 - `infra-terraform.md`
 - `cloudflare-publicacao.md`
 - `acesso-urls-publicas.md`
+- `debug-acesso-publico.md` 
 - `registry.md`
 - `keycloak.md`
 - `headlamp-oauth.md`

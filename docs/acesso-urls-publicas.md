@@ -4,6 +4,8 @@ As URLs listadas no `README.md` (ex.: `https://crm.personaldevopstrainer.online`
 
 Este documento reúne os mal-entendidos mais comuns e um checklist objetivo.
 
+Para **502**, tunnel que não alcança o cluster, ou erro no **`cloudflared`**, siga o passo a passo técnico em **[`debug-acesso-publico.md`](./debug-acesso-publico.md)**.
+
 ## O que o projeto assume
 
 1. **Cloudflare Tunnel** (`cloudflared` no cluster, token válido) — ver [`cloudflare-publicacao.md`](./cloudflare-publicacao.md).
@@ -68,7 +70,7 @@ Aponta **todas** as rotas públicas para o Envoy; o cluster encaminha pelo heade
 
 | Campo | Valor |
 |--------|--------|
-| **Service URL** | `http://envoy-gateway.envoy-gateway-system.svc.cluster.local:80` |
+| **Service URL** | `http://<serviço-com-porta-80>.envoy-gateway-system.svc.cluster.local:80` — **não** use o Service `envoy-gateway` do Helm (é control plane, sem porta 80). Obtenha o nome: `kubectl get svc -n envoy-gateway-system -o json \| jq -r '.items[] \| select(.spec.ports[]?.port == 80) \| .metadata.name'` (ver também [`cloudflare-publicacao.md`](./cloudflare-publicacao.md)). |
 
 **Subdomain** — um hostname por linha na Cloudflare:
 
@@ -91,13 +93,13 @@ Use quando quiser ir direto ao `Service` Kubernetes (sem passar pelo Envoy). Os 
 
 | Subdomain | Hostname público | Service URL |
 |-----------|------------------|-------------|
-| *(todas via Envoy)* | *(qualquer)* | `http://envoy-gateway.envoy-gateway-system.svc.cluster.local:80` |
+| *(todas via Envoy)* | *(qualquer)* | mesmo host/porta do Caminho A (Service interno com **80/TCP**, não o `envoy-gateway` do Helm) |
 | `crm` | `crm.personaldevopstrainer.online` | `http://crm-crm-api.apps.svc.cluster.local:8080` *(`release` `crm`, namespace `apps`; ajuste se for diferente)* |
 | `keycloak` | `keycloak.personaldevopstrainer.online` | `http://keycloak.keycloak.svc.cluster.local:80` |
 | `grafana` | `grafana.personaldevopstrainer.online` | `http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local:80` |
 | `prometheus` | `prometheus.personaldevopstrainer.online` | `http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090` |
-| `wazuh` | `wazuh.personaldevopstrainer.online` | `https://wazuh-dashboard.wazuh.svc.cluster.local:443` *(com Wazuh instalado; confira com `kubectl get svc -n wazuh`)* |
-| `headlamp` | `headlamp.personaldevopstrainer.online` | `http://headlamp.headlamp.svc.cluster.local:80` *(Envoy → `HTTPRoute` → Headlamp; OIDC Keycloak: [`headlamp-oauth.md`](./headlamp-oauth.md))* |
+| `wazuh` | `wazuh.personaldevopstrainer.online` | `http://wazuh-dashboard.wazuh.svc.cluster.local:5601` *(dashboard na porta **5601**, não 443; confira com `kubectl get svc -n wazuh`)* |
+| `headlamp` | `headlamp.personaldevopstrainer.online` | `http://headlamp.headlamp.svc.cluster.local:80` *(Envoy, `HTTPRoute`, Headlamp; OIDC Keycloak: [`headlamp-oauth.md`](./headlamp-oauth.md))* |
 | `nexus` | `nexus.personaldevopstrainer.online` | `http://nexus-nexus-repository-manager.nexus.svc.cluster.local:8081` |
 | `registry` | `registry.personaldevopstrainer.online` | `http://registry.registry.svc.cluster.local:5000` |
 | `vaultwarden` | `vaultwarden.personaldevopstrainer.online` | `http://vaultwarden.vaultwarden.svc.cluster.local:80` |
@@ -125,7 +127,7 @@ Mesmo com infra + tunnel corretos:
 | Tunnel | `kubectl -n cloudflare-tunnel get pods` — pods `Running` |
 | Token | Variável `cloudflare_tunnel_token` correta no Terraform / segredo no cluster |
 | Envoy | `kubectl get gateway -A`, `kubectl get httproute -A` — rotas com o hostname esperado |
-| Cloudflare | Zero Trust → Tunnels → **Public Hostnames** — existe entrada para **cada** subdomínio a publicar |
+| Cloudflare | Zero Trust, Tunnels, **Public Hostnames**: existe entrada para **cada** subdomínio a publicar |
 | Origem | Origin URL apontando para o Envoy (`http://envoy-gateway.envoy-gateway-system.svc.cluster.local:80`) ou Service correto |
 | CRM | Chart do CRM instalado e saudável se precisar dessa URL |
 
