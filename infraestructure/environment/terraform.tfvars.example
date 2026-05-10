@@ -20,12 +20,12 @@ postfix_relayhost                    = ""
 postfix_relay_username               = ""
 postfix_relay_password               = ""
 
-vaultwarden_smtp_host      = "smtp.gmail.com"
+vaultwarden_smtp_host      = ""
 vaultwarden_smtp_port      = "587"
 vaultwarden_smtp_security  = "starttls"
-vaultwarden_smtp_username  = "user@example.com"
-vaultwarden_smtp_password  = "changeme"
-vaultwarden_smtp_from      = "user@example.com"
+vaultwarden_smtp_username  = ""
+vaultwarden_smtp_password  = ""
+vaultwarden_smtp_from      = ""
 vaultwarden_smtp_from_name = "Vaultwarden"
 vaultwarden_smtp_accept_invalid_certs    = false
 vaultwarden_config_patch_invalid_certs   = true
