@@ -67,4 +67,4 @@ variable "nsgs" {
   }))
 }
 
-variable "use_stateless_rules" { type    = bool }
+variable "use_stateless_rules" { type = bool }

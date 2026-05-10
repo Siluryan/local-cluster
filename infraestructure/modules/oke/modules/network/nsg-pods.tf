@@ -14,8 +14,8 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   pod_nsg_id = one(compact([try(var.nsgs.pods.id, null), one(oci_core_network_security_group.pods[*].id)]))
-  pods_rules = local.pod_nsg_enabled ? ( var.use_stateless_rules ? local.pod_stateless_rules: local.pod_stateful_rules ) : {}
-  
+  pods_rules = local.pod_nsg_enabled ? (var.use_stateless_rules ? local.pod_stateless_rules : local.pod_stateful_rules) : {}
+
   pod_stateful_rules = merge(
     {
       "Allow TCP egress from pods to OCI Services" : {
@@ -67,7 +67,7 @@ locals {
       "Allow ALL ingress from pub_lb to pods" = {
         protocol = local.all_protocols, port = local.all_ports, source = local.pub_lb_nsg_id, source_type = local.rule_type_nsg,
       }
-    }: {},
+    } : {},
 
     var.enable_ipv6 ? {
       "Allow ICMPv6 ingress to pods for path discovery" : {
@@ -148,8 +148,8 @@ locals {
       "Allow ALL egress from pods to pub_lb" = {
         protocol = local.all_protocols, port = local.all_ports, source = local.pub_lb_nsg_id, source_type = local.rule_type_nsg, stateless = true
       }
-    }: {},
-    
+    } : {},
+
     var.enable_ipv6 ? {
       "Allow ICMPv6 ingress to pods for path discovery" : {
         protocol = local.icmpv6_protocol, port = local.all_ports, source = local.anywhere_ipv6, source_type = local.rule_type_cidr,
@@ -160,20 +160,20 @@ locals {
     } : {},
 
     var.allow_pod_internet_access ?
-      merge(
-        var.enable_ipv6 ? {
-          "Allow ALL IPv6 egress from pods to internet (not using stateless rules because of security concern with IPv6 GUA and routing over IGW)" = {
-            protocol = local.all_protocols, port = local.all_ports, destination = local.anywhere_ipv6, destination_type = local.rule_type_cidr,
-          }
-        } : {},
-        {
-          "Allow ALL egress from pods to anywhere" = {
-            protocol = local.all_protocols, port = local.all_ports, destination = local.anywhere, destination_type = local.rule_type_cidr, stateless = true
-          }
-          "Allow ALL ingress to pods from anywhere" = {
-            protocol = local.all_protocols, port = local.all_ports, source = local.anywhere, source_type = local.rule_type_cidr, stateless = true
-          }
-      }) : {},
+    merge(
+      var.enable_ipv6 ? {
+        "Allow ALL IPv6 egress from pods to internet (not using stateless rules because of security concern with IPv6 GUA and routing over IGW)" = {
+          protocol = local.all_protocols, port = local.all_ports, destination = local.anywhere_ipv6, destination_type = local.rule_type_cidr,
+        }
+      } : {},
+      {
+        "Allow ALL egress from pods to anywhere" = {
+          protocol = local.all_protocols, port = local.all_ports, destination = local.anywhere, destination_type = local.rule_type_cidr, stateless = true
+        }
+        "Allow ALL ingress to pods from anywhere" = {
+          protocol = local.all_protocols, port = local.all_ports, source = local.anywhere, source_type = local.rule_type_cidr, stateless = true
+        }
+    }) : {},
     var.allow_rules_pods
   )
 }

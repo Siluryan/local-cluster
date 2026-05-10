@@ -14,8 +14,8 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   worker_nsg_id = one(compact([try(var.nsgs.workers.id, null), one(oci_core_network_security_group.workers[*].id)]))
-  workers_rules = local.worker_nsg_enabled ? ( var.use_stateless_rules ? local.workers_stateless_rules: local.workers_stateful_rules ) : {}
-  
+  workers_rules = local.worker_nsg_enabled ? (var.use_stateless_rules ? local.workers_stateless_rules : local.workers_stateful_rules) : {}
+
   workers_stateful_rules = merge(
     {
       "Allow TCP egress from workers to OCI Services" : {
@@ -274,7 +274,7 @@ locals {
 
       "Allow TCP ingress to workers for NFS from FSS mounts" : {
         protocol = local.tcp_protocol, source_port_min = local.fss_nfs_port_min, source_port_max = local.fss_nfs_port_max, source = local.fss_nsg_id, source_type = local.rule_type_nsg, stateless = true
-      },      
+      },
       "Allow TCP egress from workers for NFS to FSS mounts" : {
         protocol = local.tcp_protocol, destination_port_min = local.fss_nfs_port_min, destination_port_max = local.fss_nfs_port_max, destination = local.fss_nsg_id, destination_type = local.rule_type_nsg, stateless = true
       },

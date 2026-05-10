@@ -14,9 +14,9 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   control_plane_nsg_id = one(compact([try(var.nsgs.cp.id, null), one(oci_core_network_security_group.cp[*].id)]))
-  control_plane_rules = local.control_plane_nsg_enabled ? ( var.use_stateless_rules ? local.control_plane_stateless_rules: local.control_plane_stateful_rules ) : {}
-  
-  control_plane_stateful_rules= merge(
+  control_plane_rules  = local.control_plane_nsg_enabled ? (var.use_stateless_rules ? local.control_plane_stateless_rules : local.control_plane_stateful_rules) : {}
+
+  control_plane_stateful_rules = merge(
     {
       "Allow TCP egress from OKE control plane to OCI services" : {
         protocol = local.tcp_protocol, port = local.all_ports, destination = local.osn, destination_type = local.rule_type_service,
@@ -87,7 +87,7 @@ locals {
     var.allow_rules_cp
   )
 
-  control_plane_stateless_rules= merge(
+  control_plane_stateless_rules = merge(
     {
       "Allow TCP egress from OKE control plane to OCI services" : {
         protocol = local.all_protocols, port = local.all_ports, destination = local.osn, destination_type = local.rule_type_service, stateless = true

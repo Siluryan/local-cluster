@@ -14,8 +14,8 @@ locals {
   ])
   # Return provided NSG when configured with an existing ID or created resource ID
   operator_nsg_id = one(compact([try(var.nsgs.operator.id, null), one(oci_core_network_security_group.operator[*].id)]))
-  operator_rules = local.operator_nsg_enabled ? ( var.use_stateless_rules ? local.operator_stateless_rules: local.operator_stateful_rules ) : {}
-  
+  operator_rules  = local.operator_nsg_enabled ? (var.use_stateless_rules ? local.operator_stateless_rules : local.operator_stateful_rules) : {}
+
   operator_stateful_rules = merge(
     {
       "Allow TCP egress from operator to OCI services" : {
