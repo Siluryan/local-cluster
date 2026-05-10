@@ -35,6 +35,12 @@ No client OIDC correspondente:
 
 Os nomes das variáveis Terraform mantêm o prefixo `headlamp_oauth_*` por compatibilidade; o fluxo exposto ao usuário é OIDC no Headlamp, não oauth2-proxy.
 
+### RBAC por grupo no Kubernetes
+
+Se usar **Kind** e quiser permissões por **grupo** (em vez de utilizador), o apiserver precisa de `oidc-groups-claim` e o Keycloak de emitir o claim de grupos no **access token** (mapper *Group membership*, grupos no realm, etc.). Guia completo passo a passo: [`kind-oidc-apiserver.md`](./kind-oidc-apiserver.md) (secções *Passo 1*, *4.2* e *Passo 5 — Keycloak: grupos no JWT*).
+
+Se o realm só emitir grupos com um **scope** OAuth extra, pode ser necessário alargar `config.oidc.scopes` no módulo Helm do Headlamp (hoje: `openid profile email`).
+
 ## Aplicar
 
 ```bash
@@ -52,36 +58,20 @@ Se ainda existir um release Helm `headlamp-oauth`, remova-o após o apply (`helm
 
 Com OIDC ligado, o Headlamp envia o **JWT do Keycloak** ao **kube-apiserver**. Se o servidor de API **não** estiver configurado para confiar nesse issuer/cliente, o usuário é tratado como **`system:anonymous`** (ou equivalente sem RBAC) e **não aparecem Pods, Nodes, etc.** Isso é independente do `ClusterRoleBinding` do **ServiceAccount** do Headlamp (que só cobre o modo “in-cluster” sem identidade OIDC reconhecida pelo apiserver).
 
-Resumo do que falta normalmente:
+O que costuma faltar:
 
-1. **Flags OIDC no kube-apiserver** (`oidc-issuer-url`, `oidc-client-id`, e opcionalmente `oidc-username-claim`, `oidc-groups-claim`), alinhadas ao **`iss`** do token do Keycloak e ao **audience** esperado. Documentação: [OpenID Connect Tokens](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens).
-2. **RBAC**: pelo menos um `ClusterRoleBinding` que associe o **usuário** ou **grupo** OIDC (como o apiserver os expõe após validar o token) a um `ClusterRole` (por exemplo `cluster-admin` para laboratório).
+1. **Flags OIDC no kube-apiserver** alinhadas ao `iss` do token e ao client/audience esperado.
+2. **RBAC**: `ClusterRoleBinding` para o **User** ou **Group** que o apiserver extrai do JWT (não basta o binding do ServiceAccount do pod Headlamp).
 
-Em clusters **Kind**, costuma-se injetar isso via `kubeadmConfigPatches` no arquivo do cluster (recriar o cluster depois de alterar). Exemplo mínimo (substitua issuer e client-id pelos seus; o issuer deve coincidir com o URL do realm no Keycloak):
+Em clusters **Kind**, o passo a passo completo (ficheiro `kind-cluster.yaml`, recriar cluster, verificação, RBAC por utilizador ou por grupo, Keycloak com grupos no JWT, reinstalar workloads) está em **[`kind-oidc-apiserver.md`](./kind-oidc-apiserver.md)**.
 
-```yaml
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-  - role: control-plane
-    kubeadmConfigPatches:
-      - |
-        kind: ClusterConfiguration
-        apiServer:
-          extraArgs:
-            oidc-issuer-url: "https://keycloak.EXEMPLO/realms/master"
-            oidc-client-id: "o-seu-client-id-do-keycloak"
-            oidc-username-claim: "preferred_username"
-```
+Documentação geral: [OpenID Connect Tokens](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#openid-connect-tokens).
 
-Para permissões por **grupo**, o token tem de trazer o claim de grupos e o apiserver precisa de `oidc-groups-claim`; no Keycloak é comum acrescentar o scope/mapper `groups` e alargar os scopes do Headlamp no Terraform se você for por esse caminho.
-
-Referência Headlamp sobre o mesmo tema: [issue #4618](https://github.com/kubernetes-sigs/headlamp/issues/4618).
-
-Guia passo a passo para **Kind** (arquivo de cluster, recriar cluster, verificar): [`kind-oidc-apiserver.md`](./kind-oidc-apiserver.md).
+Referência Headlamp: [issue #4618](https://github.com/kubernetes-sigs/headlamp/issues/4618).
 
 ## Links úteis
 
 - Headlamp OIDC: [Accessing using OpenID Connect](https://www.headlamp.dev/docs/latest/installation/in-cluster/oidc)
 - Keycloak no lab: [`keycloak.md`](./keycloak.md)
+- Kind + apiserver OIDC + RBAC + Keycloak (guia longo): [`kind-oidc-apiserver.md`](./kind-oidc-apiserver.md)
 - URLs públicas: [`acesso-urls-publicas.md`](./acesso-urls-publicas.md)
