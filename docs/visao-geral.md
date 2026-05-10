@@ -28,5 +28,5 @@ Este repositório provisiona um cluster pessoal com:
 - `external-secrets`: sincronização de segredos
 - `vaultwarden`: cofre com interface web
 - `wireguard-ui`: VPN WireGuard com painel web
-- `headlamp`: painel web de administração do cluster
+- `headlamp`: painel web de administração do cluster (OIDC com Keycloak; ver [`headlamp-oauth.md`](./headlamp-oauth.md))
 - `wazuh`: SIEM/XDR para monitoramento de segurança

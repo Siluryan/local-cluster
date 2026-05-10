@@ -12,6 +12,18 @@ resource "helm_release" "headlamp" {
         type = "ClusterIP"
         port = 80
       }
+      config = {
+        oidc = {
+          secret = {
+            create = true
+            name   = "oidc"
+          }
+          clientID     = var.oauth_client_id
+          clientSecret = var.oauth_client_secret
+          issuerURL    = "https://keycloak.${var.cluster_domain}/realms/${var.oauth_keycloak_realm}"
+          scopes       = "openid profile email"
+        }
+      }
     })
   ]
 }

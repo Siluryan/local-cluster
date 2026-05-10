@@ -90,3 +90,17 @@ variable "enable_wazuh" {
   type    = bool
   default = true
 }
+
+variable "headlamp_oauth_client_id" {
+  type = string
+}
+
+variable "headlamp_oauth_client_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "headlamp_oauth_keycloak_realm" {
+  type    = string
+  default = "master"
+}

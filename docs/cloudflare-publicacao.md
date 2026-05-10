@@ -60,7 +60,7 @@ Use o Service interno de cada app. Exemplos comuns:
 - WG-Easy UI: `http://wireguard-ui.wireguard.svc.cluster.local:80`
 - Nexus: `http://nexus-nexus-repository-manager.nexus.svc.cluster.local:8081`
 - Keycloak: `http://keycloak.keycloak.svc.cluster.local:80`
-- Headlamp: `http://headlamp.headlamp.svc.cluster.local:80`
+- Headlamp: `http://headlamp.headlamp.svc.cluster.local:80` — OIDC descrito em [`headlamp-oauth.md`](./headlamp-oauth.md)
 
 ## TLS / HTTPS
 

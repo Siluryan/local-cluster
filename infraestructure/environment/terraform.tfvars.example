@@ -20,3 +20,7 @@ keycloak_admin_password    = "changeme"
 keycloak_postgres_password = "changeme"
 
 registry_htpasswd = "user:$2y$12$changeme"
+
+headlamp_oauth_client_id      = "headlamp"
+headlamp_oauth_client_secret  = "changeme-keycloak-client-secret"
+headlamp_oauth_keycloak_realm = "master"

@@ -86,8 +86,11 @@ module "wireguard_ui" {
 module "headlamp" {
   source = "./headlamp"
 
-  cluster_domain = var.cluster_domain
-  depends_on     = [module.envoy, module.external_dns]
+  cluster_domain        = var.cluster_domain
+  oauth_client_id      = var.headlamp_oauth_client_id
+  oauth_client_secret  = var.headlamp_oauth_client_secret
+  oauth_keycloak_realm = var.headlamp_oauth_keycloak_realm
+  depends_on            = [module.envoy, module.external_dns, module.keycloak]
 }
 
 module "nexus" {
