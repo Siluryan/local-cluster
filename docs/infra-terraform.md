@@ -1,6 +1,6 @@
 # Infra via Terraform
 
-O stack **`infraestructure/environment`** está preparado por defeito para **cluster local** (Kind ou outro): credenciais via **`kubeconfig_path`** / **`kube_context`** em `terraform.tfvars`, e estado Terraform **local** (`backend.tf`). Copia `infraestructure/environment/terraform.tfvars.example` para `terraform.tfvars` (não versionado) e preenche domínios, palavras-passe e tokens.
+O stack **`infraestructure/environment`** está preparado por padrão para **cluster local** (Kind ou outro): credenciais via **`kubeconfig_path`** / **`kube_context`** em `terraform.tfvars`, e estado Terraform **local** (`backend.tf`). Copie `infraestructure/environment/terraform.tfvars.example` para `terraform.tfvars` (não versionado) e preencha domínios, senhas e tokens.
 
 Para usar **Oracle (OKE, backend Object Storage, remote state do cluster)** no stack `environment`, o código precisa de ser alinhado com essa variante; segue o guia passo a passo em **[`environment-oracle.md`](environment-oracle.md)**.
 
@@ -27,7 +27,7 @@ wireguard_admin_password_hash = "$2b$12$..."
 wireguard_public_host         = "vpn.personaldevopstrainer.online"
 ```
 
-Para hosts em `*.personaldevopstrainer.online`, usa `bind_zone = "personaldevopstrainer.online"`.
+Para hosts em `*.personaldevopstrainer.online`, use `bind_zone = "personaldevopstrainer.online"`.
 
 ## Aplicar (environment em modo local)
 
@@ -82,14 +82,14 @@ O meio-termo costuma ser:
 
 ## Backend remoto (OCI Object Storage)
 
-Os stacks usam backend **`oci`** (Terraform **>= 1.12**); credenciais API típicas via ficheiro HCL gitignored — ver secção «Aplicar». Migração de state:
+Os stacks usam backend **`oci`** (Terraform **>= 1.12**); credenciais API típicas via arquivo HCL gitignored — veja a seção "Aplicar". Migração de state:
 
 ```bash
 cd infraestructure/cluster
 terraform init -backend-config=../backend-cluster.hcl -migrate-state
 ```
 
-Se já tens backend remoto e só mudaste região ou credenciais:
+Se você já tem backend remoto e só mudou região ou credenciais:
 
 ```bash
 terraform init -backend-config=../backend-cluster.hcl -reconfigure

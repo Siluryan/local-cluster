@@ -8,6 +8,13 @@ resource "helm_release" "headlamp" {
 
   values = [
     yamlencode({
+      serviceAccount = {
+        create = true
+      }
+      clusterRoleBinding = {
+        create          = true
+        clusterRoleName = "cluster-admin"
+      }
       service = {
         type = "ClusterIP"
         port = 80
