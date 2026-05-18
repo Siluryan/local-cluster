@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: Siluryan
+spec:
+  memberOf: [guests]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: team-lab
+  description: Time do lab local-cluster
+spec:
+  type: team
+  children: []
+  members: [Siluryan]

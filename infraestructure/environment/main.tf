@@ -34,4 +34,13 @@ module "helm" {
   headlamp_oauth_client_id              = var.headlamp_oauth_client_id
   headlamp_oauth_client_secret          = var.headlamp_oauth_client_secret
   headlamp_oauth_keycloak_realm         = var.headlamp_oauth_keycloak_realm
+  backstage_enabled                     = var.backstage_enabled
+  backstage_postgres_password           = var.backstage_postgres_password
+  backstage_image_repository            = var.backstage_image_repository
+  backstage_image_tag                   = var.backstage_image_tag
+  backstage_image_pull_policy           = var.backstage_image_pull_policy
+  backstage_github_token                = var.backstage_github_token
+  backstage_github_oauth_client_id      = var.backstage_github_oauth_client_id
+  backstage_github_oauth_client_secret  = var.backstage_github_oauth_client_secret
+  backstage_catalog_repo_url            = var.backstage_catalog_repo_url
 }

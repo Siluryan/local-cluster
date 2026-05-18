@@ -30,3 +30,4 @@ Este repositório provisiona um cluster pessoal com:
 - `wireguard-ui`: VPN WireGuard com painel web
 - `headlamp`: painel web de administração do cluster (OIDC com Keycloak; ver [`headlamp-oauth.md`](./headlamp-oauth.md))
 - `wazuh`: SIEM/XDR para monitoramento de segurança
+- `backstage`: portal de engenharia ([`backstage.md`](./backstage.md))

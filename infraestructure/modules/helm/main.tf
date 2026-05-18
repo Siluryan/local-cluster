@@ -174,3 +174,19 @@ module "wazuh" {
   cluster_domain = var.cluster_domain
   depends_on     = [module.envoy, module.external_dns]
 }
+
+module "backstage" {
+  count  = var.backstage_enabled ? 1 : 0
+  source = "./backstage"
+
+  cluster_domain              = var.cluster_domain
+  postgres_password           = var.backstage_postgres_password
+  image_repository            = var.backstage_image_repository
+  image_tag                   = var.backstage_image_tag
+  image_pull_policy           = var.backstage_image_pull_policy
+  github_token                = var.backstage_github_token
+  github_oauth_client_id      = var.backstage_github_oauth_client_id
+  github_oauth_client_secret  = var.backstage_github_oauth_client_secret
+  catalog_repo_url            = var.backstage_catalog_repo_url
+  depends_on                  = [module.envoy, module.external_dns]
+}

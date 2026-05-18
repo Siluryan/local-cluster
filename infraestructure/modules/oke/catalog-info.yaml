@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: terraform-oci-oke
+  title: Terraform OCI OKE Module
+  description: Módulo vendored para provisionar OKE na OCI (não usado no fluxo Kind atual)
+  tags:
+    - terraform
+    - oci
+    - oke
+  links:
+    - url: https://github.com/Siluryan/local-cluster/tree/main/infraestructure/modules/oke
+      title: Módulo no repo
+    - url: https://github.com/oracle-terraform-modules/terraform-oci-oke
+      title: Upstream Oracle
+spec:
+  type: library
+  lifecycle: experimental
+  owner: guests
+  system: local-cluster-lab

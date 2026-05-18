@@ -189,3 +189,52 @@ variable "headlamp_oauth_keycloak_realm" {
   type    = string
   default = "master"
 }
+
+variable "backstage_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "backstage_postgres_password" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
+variable "backstage_image_repository" {
+  type    = string
+  default = "backstage"
+}
+
+variable "backstage_image_tag" {
+  type    = string
+  default = "latest"
+}
+
+variable "backstage_image_pull_policy" {
+  type    = string
+  default = "IfNotPresent"
+}
+
+variable "backstage_github_token" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
+variable "backstage_github_oauth_client_id" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
+variable "backstage_github_oauth_client_secret" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
+variable "backstage_catalog_repo_url" {
+  type    = string
+  default = "https://github.com/Siluryan/local-cluster/raw/main/catalog-info.yaml"
+}
