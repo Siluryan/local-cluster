@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: crm-api
+  title: CRM API
+  description: API REST Spring Boot + Postgres, deploy via Helm no namespace apps
+  tags:
+    - java
+    - spring-boot
+    - helm
+  links:
+    - url: https://github.com/Siluryan/local-cluster/tree/main/app
+      title: Código
+    - url: https://crm.personaldevopstrainer.online/api/health
+      title: Health
+  annotations:
+    backstage.io/source-location: url:https://github.com/Siluryan/local-cluster/tree/main/app
+    github.com/project-slug: Siluryan/local-cluster
+spec:
+  type: service
+  lifecycle: production
+  owner: team-lab
+  system: local-cluster-lab

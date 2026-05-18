@@ -1,0 +1,30 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: local-cluster-lab
+  title: Local Cluster Lab
+  description: Lab K8s pessoal (Envoy, cert-manager, Keycloak, ESO, registry, etc.)
+spec:
+  owner: guests
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: keycloak
+  title: Keycloak
+  description: IdP OIDC — ver docs/keycloak.md
+spec:
+  type: identity-provider
+  owner: guests
+  system: local-cluster-lab
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: cluster-registry
+  title: Container Registry
+  description: Docker Registry no cluster — ver docs/registry.md
+spec:
+  type: registry
+  owner: guests
+  system: local-cluster-lab

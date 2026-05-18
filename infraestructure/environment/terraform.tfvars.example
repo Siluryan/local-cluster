@@ -45,3 +45,9 @@ registry_htpasswd = "user:$2y$12$changeme"
 headlamp_oauth_client_id      = "headlamp"
 headlamp_oauth_client_secret  = "changeme-keycloak-client-secret"
 headlamp_oauth_keycloak_realm = "master"
+
+backstage_enabled           = true
+backstage_postgres_password = "changeme-backstage-db"
+backstage_image_repository  = "backstage"
+backstage_image_tag         = "latest"
+backstage_image_pull_policy = "IfNotPresent"

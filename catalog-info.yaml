@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: local-cluster-entities
+spec:
+  targets:
+    - ./app/catalog-info.yaml
+    - ./infraestructure/modules/oke/catalog-info.yaml
+    - ./catalog/entities.yaml
+    - ./catalog/users.yaml

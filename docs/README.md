@@ -15,6 +15,7 @@ Ordem sugerida de leitura:
 - `secrets-eso-vaultwarden.md`
 - `postfix-mail-vaultwarden.md`
 - `app-crm.md`
+- `backstage.md`
 - `wazuh.md`
 - `wireguard.md`
 - `nexus-maven.md`
